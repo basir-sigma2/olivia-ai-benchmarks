@@ -1,8 +1,8 @@
 schema_version: 1
-id: "2026-09-27_apertus-1.5-70b_vllm_2gpu_eager"
+id: "2026-09-27_apertus-1.5-70b_vllm_2gpu_eager_cold"
 date: "2026-09-27"
 submitter: basir-sigma2
-job_id: 2372455
+job_id: 2368752
 
 system:
   name: Olivia
@@ -39,11 +39,11 @@ parallelism: {tp: 2, pp: 1, ep: 1, dp: 1}
 cuda_graphs: false
 
 benchmark:
-  suite: olivia-v3
+  suite: olivia-v1
   client: vllm bench serve
   client_version: "0.27.1"
 
 validation:
-  server_chat_requests: 2738
+  server_chat_requests: 1076
 
 notes: "Eager mode: CUDA-graph capture crashes in this image (illegal memory access), so graphs are off. Not comparable with graph-mode runs."

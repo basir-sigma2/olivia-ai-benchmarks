@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+borealis2-26b-a4b_sglang_1gpu	conc-scaling	1024	128	4	1	1.24	158.99	1447.37	142.48	5.22	5.24
+borealis2-26b-a4b_sglang_1gpu	conc-scaling	1024	128	16	4	3.64	465.31	4235.98	196.67	7.11	7.25
+borealis2-26b-a4b_sglang_1gpu	conc-scaling	1024	128	64	16	8.38	1073.19	9770.84	410.03	11.79	13.41
+borealis2-26b-a4b_sglang_1gpu	conc-scaling	1024	128	128	32	12.43	1590.96	14486.35	512.32	16.22	20.34
+borealis2-26b-a4b_sglang_1gpu	conc-scaling	1024	128	256	64	14.22	1820.59	16576.96	1335.36	24.88	33.40
+borealis2-26b-a4b_sglang_1gpu	conc-scaling	1024	128	512	128	14.82	1896.59	17268.66	2709.15	43.46	86.71
+borealis2-26b-a4b_sglang_1gpu	prefill	1024	32	16	8	14.99	479.56	16023.98	262.05	8.74	9.78
+borealis2-26b-a4b_sglang_1gpu	prefill	4096	32	16	8	5.39	172.33	22302.18	998.06	15.68	33.28
+borealis2-26b-a4b_sglang_1gpu	prefill	16384	32	16	8	1.05	33.52	17207.94	4583.04	98.48	206.43
+borealis2-26b-a4b_sglang_1gpu	decode	256	128	16	8	6.46	827.04	2566.73	115.54	8.83	9.00
+borealis2-26b-a4b_sglang_1gpu	decode	256	512	16	8	1.87	958.72	1462.89	171.35	8.02	8.26
+borealis2-26b-a4b_sglang_1gpu	decode	256	1024	16	8	0.87	890.09	1124.14	110.58	8.89	9.07

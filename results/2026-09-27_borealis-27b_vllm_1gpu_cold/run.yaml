@@ -1,8 +1,8 @@
 schema_version: 1
-id: "2026-09-27_borealis-27b_vllm_1gpu"
+id: "2026-09-27_borealis-27b_vllm_1gpu_cold"
 date: "2026-09-27"
 submitter: basir-sigma2
-job_id: 2372454
+job_id: 2368886
 
 system:
   name: Olivia
@@ -38,9 +38,9 @@ parallelism: {tp: 1, pp: 1, ep: 1, dp: 1}
 cuda_graphs: true
 
 benchmark:
-  suite: olivia-v3
+  suite: olivia-v1
   client: vllm bench serve
   client_version: "0.27.1"
 
 validation:
-  server_chat_requests: 2738
+  server_chat_requests: 1076

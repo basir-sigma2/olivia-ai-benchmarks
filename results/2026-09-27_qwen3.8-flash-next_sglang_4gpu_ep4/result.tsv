@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	conc-scaling	1024	128	4	1	1.03	131.78	1186.02	188.12	6.13	6.14
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	conc-scaling	1024	128	16	4	3.08	394.59	3551.31	380.03	7.19	7.77
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	conc-scaling	1024	128	64	16	8.38	1072.95	9656.55	664.28	9.76	12.54
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	conc-scaling	1024	128	128	32	13.65	1746.84	15721.58	787.64	12.21	17.62
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	conc-scaling	1024	128	256	64	18.85	2413.27	21719.44	1160.32	17.51	28.44
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	conc-scaling	1024	128	512	128	21.57	2760.74	24846.68	2347.81	28.11	49.66
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	prefill	1024	32	16	8	10.66	341.14	11257.66	498.84	7.85	13.15
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	prefill	4096	32	16	8	6.83	218.64	28204.50	799.39	11.72	22.39
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	prefill	16384	32	16	8	2.31	73.85	37886.21	2104.80	43.59	88.25
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	decode	256	128	16	8	5.94	759.89	2279.68	409.60	7.32	7.37
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	decode	256	512	16	8	1.90	974.78	1462.18	384.65	7.45	7.46
+qwen3.8-flash-next_sglang0.5.20_4gpu_ep4	decode	256	1024	16	8	0.98	1006.74	1258.42	390.77	7.57	7.59

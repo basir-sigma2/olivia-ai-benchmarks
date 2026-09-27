@@ -1,0 +1,48 @@
+schema_version: 1
+id: "2026-09-27_qwen3.8-flash-next_sglang_4gpu_ep4"
+date: "2026-09-27"
+submitter: basir-sigma2
+job_id: 2372458
+
+system:
+  name: Olivia
+  operator: Sigma2 / NRIS (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 1
+gpus: 4
+max_context: 131072
+
+model:
+  repo: Qwen/Qwen3.8-Flash-Next-FP8
+  revision: 236dfdf285828023ca3bcd3f37366c58a3469b13
+  architecture: Qwen4ExpForConditionalGeneration
+  kind: moe
+  params_b: 180.0
+  active_params_b: 6
+  precision: "fp8"
+  weights: "fp8 block-quantised checkpoint (model card: 125B MoE + 51B n-gram embedding + 4B MTP)"
+
+engine:
+  name: sglang
+  version: "0.5.20"
+  image: "docker://lmsysorg/sglang@sha256:b0d8718a4424bb22e448e04407ab3ce5f7399a4c5fc702d6fbe36c3772ec8862 (arm64, cu130)"
+  sif_sha256: "1b8941f599305f4b7b0283f7f1675f4131a13a7933f29d52d6672ac6d50967d6"
+  torch: "2.13.0+cu130"
+  flags: "--tp 4 --ep-size 4 --context-length 131072 --attention-backend flashinfer --mm-attention-backend sdpa --disable-fast-image-processor"
+  env: {}
+parallelism: {tp: 4, pp: 1, ep: 4, dp: 1, notes: "experts spread over the 4 GPUs; attention tensor parallel"}
+cuda_graphs: true
+
+benchmark:
+  suite: olivia-v3
+  client: sglang.benchmark.serving
+  client_version: "0.5.20"
+
+validation:
+  server_chat_requests: 2739
+  timed_pass_compile_warnings: 0
+
+notes: "Plain --tp 4 fails to load: each rank's MoE slice (640 / 4 = 160) is not a multiple of the FP8 block size 128, so experts are split with --ep-size 4. Benchmarked with SGLang's client (--dataset-name random-ids --random-range-ratio 1 --warmup-requests <conc>) because the vLLM client's transformers cannot load this architecture. No FlashAttention-3 kernels in the arm64 build, hence --attention-backend flashinfer. CUDA graphs for decode only; SGLang turns prefill graphs off for multimodal models."

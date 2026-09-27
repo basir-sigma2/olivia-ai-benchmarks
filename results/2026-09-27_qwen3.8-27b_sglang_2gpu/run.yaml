@@ -2,7 +2,7 @@ schema_version: 1
 id: "2026-09-27_qwen3.8-27b_sglang_2gpu"
 date: "2026-09-27"
 submitter: basir-sigma2
-job_id: 2368885
+job_id: 2372453
 
 system:
   name: Olivia
@@ -37,11 +37,11 @@ parallelism: {tp: 2, pp: 1, ep: 1, dp: 1}
 cuda_graphs: true
 
 benchmark:
-  suite: olivia-v1
+  suite: olivia-v3
   client: vllm bench serve
   client_version: "0.27.1"
 
 validation:
-  server_chat_requests: 1077
+  server_chat_requests: 2739
 
 notes: "The layout Sigma2 runs this model with in production (tp 2, 256k context)."

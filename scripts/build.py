@@ -25,13 +25,16 @@ METRIC_COLS = ["req_s", "out_tok_s", "total_tok_s", "ttft_ms", "tpot_ms", "p99_t
 CONTEXT_MARGIN = 512  # a point is skipped when in_len + out_len + 512 > max_context
 
 # (scenario, in_len, out_len, prompts, concurrency) of every point in a suite
+POINTS_V1 = (
+    [("conc-scaling", 1024, 128, 4 * c, c) for c in (1, 4, 16, 32, 64, 128)]
+    + [("prefill", i, 32, 16, 8) for i in (1024, 4096, 16384)]
+    + [("decode", 256, o, 16, 8) for o in (128, 512, 1024)]
+)
 SUITES = {
-    "olivia-v1": (
-        [("conc-scaling", 1024, 128, 4 * c, c) for c in (1, 4, 16, 32, 64, 128)]
-        + [("prefill", i, 32, 16, 8) for i in (1024, 4096, 16384)]
-        + [("decode", 256, o, 16, 8) for o in (128, 512, 1024)]
-    ),
+    "olivia-v1": POINTS_V1,  # measured cold: no warm-up
+    "olivia-v2": POINTS_V1,  # measured hot: one untimed wave (concurrency requests) before each point
 }
+WARMUP = {"olivia-v1": lambda conc: 0, "olivia-v2": lambda conc: conc}  # untimed requests per point
 
 
 def plain(value):
@@ -136,11 +139,12 @@ def check_run(folder, validator):
         errors.append(f"result.tsv point {pt[0]} in={pt[1]} out={pt[2]} prompts={pt[3]} c={pt[4]} {why}")
 
     # The server's own log is the check that the client measured this server and nothing else did.
-    expected = sum(p["prompts"] for p in points)
+    warm = WARMUP[run["benchmark"]["suite"]]
+    expected = sum(p["prompts"] + warm(p["conc"]) for p in points)
     logged = run["validation"]["server_chat_requests"]
     slack = len(points) + 1  # one warm-up request per point and one at server start, at most
     if not expected <= logged <= expected + slack:
-        errors.append(f"server logged {logged} chat requests; the suite sent {expected} "
+        errors.append(f"server logged {logged} chat requests; the suite sent {expected} with warm-up "
                       f"(allowed {expected}..{expected + slack}); another job may have shared the server")
     if errors:
         return None, errors
@@ -183,8 +187,10 @@ def main():
         args.out.parent.mkdir(parents=True, exist_ok=True)
         doc = {
             "schema_version": 1,
-            "suites": {name: [dict(zip(("scenario", "in_len", "out_len", "prompts", "conc"), pt)) for pt in pts]
+            "suites": {name: {"warmup_per_point": "concurrency" if name != "olivia-v1" else 0,
+                              "points": [dict(zip(("scenario", "in_len", "out_len", "prompts", "conc"), pt)) for pt in pts]}
                        for name, pts in SUITES.items()},
+            "latest_suite": max(r["benchmark"]["suite"] for r in runs),
             "columns": {"out_tok_s": "output tokens/s, all requests", "total_tok_s": "input+output tokens/s",
                         "ttft_ms": "mean time to first token", "tpot_ms": "mean time per output token",
                         "p99_tpot_ms": "99th percentile time per output token"},

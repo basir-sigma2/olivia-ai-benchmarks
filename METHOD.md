@@ -1,4 +1,4 @@
-# Method: suite `olivia-v1`
+# Method: suite `olivia-v2`
 
 ## Setup
 
@@ -7,11 +7,12 @@
   runs on the node that serves the API.
 - **Prompts.** Prompts are random token ids of fixed length. EOS is ignored, so every request generates exactly
   `out_len` tokens.
-- **Warm-up.** There is none, apart from what the client does on its own.
+- **Warm-up.** Every point starts with one untimed wave: as many requests as the point's concurrency, with the
+  point's own prompt and answer lengths. The server is measured hot, the way a running service is.
 - **Server configuration.** Serve the model the way you would in production, without reasoning or tool-call
   parsers. Those parsers move tokens out of the counted output.
 
-## The 12 points (1,076 requests)
+## The 12 points (1,076 measured requests, 293 warm-up)
 
 | Scenario | Input tokens | Output tokens | Concurrency | Prompts |
 |---|---|---|---|---|
@@ -33,7 +34,7 @@ vllm bench serve --backend openai-chat --endpoint /v1/chat/completions \
   --base-url "http://127.0.0.1:$PORT" --model "$SNAPSHOT" --served-model-name "$SERVED" \
   --tokenizer "$SNAPSHOT" --trust-remote-code --ignore-eos \
   --dataset-name random --random-input-len "$IN" --random-output-len "$OUT" \
-  --num-prompts "$PROMPTS" --max-concurrency "$CONC"
+  --num-warmups "$CONC" --num-prompts "$PROMPTS" --max-concurrency "$CONC"
 ```
 
 Some new architectures have a tokenizer or config that the client's transformers version cannot load. For
@@ -44,7 +45,7 @@ ratio of 1 fixes the lengths.
 python3 -m sglang.benchmark.serving --backend sglang-oai-chat --base-url "http://127.0.0.1:$PORT" \
   --model "$SERVED" --tokenizer "$SNAPSHOT" --dataset-name random-ids \
   --random-input-len "$IN" --random-output-len "$OUT" --random-range-ratio 1 \
-  --num-prompts "$PROMPTS" --max-concurrency "$CONC"
+  --warmup-requests "$CONC" --num-prompts "$PROMPTS" --max-concurrency "$CONC"
 ```
 
 ## `result.tsv`
@@ -68,8 +69,8 @@ To keep runs valid:
   10000). Before the suite starts, check that `/v1/models` lists your served model name.
 - **Count the requests.** After the suite, count the chat-completion requests in the server's own log and put
   the number in `validation.server_chat_requests`.
-  - It must equal the suite's total: 1,076 when all 12 points run. Some SGLang versions log one extra warm-up
-    request.
+  - It must equal the suite's total including warm-up: 1,369 when all 12 points run (1,076 measured plus 293
+    warm-up). Some SGLang versions log one more request of their own at start-up.
   - Any other number means another job reached your server, or your client reached another server. Rerun.
   - `scripts/build.py` enforces this.
 - **No failed requests.** A failed request in any point invalidates the run.
@@ -84,3 +85,12 @@ To keep runs valid:
   If it is not, use expert parallel (`--ep-size`).
 - **CUDA graphs.** Record whether graphs were on (`cuda_graphs`). Eager runs are much slower at low
   concurrency, and they are labelled in the tables.
+
+## Suite versions
+
+- **`olivia-v2`** (current, from 27 September 2026): the 12 points, each preceded by one untimed warm-up wave.
+- **`olivia-v1`** (27 September 2026): the same 12 points measured cold, like CSCS's `bench_suite.sh`. On
+  multi-node servers the first point then includes one-time costs: time to first token at 1 user was about twice
+  the 4-user value.
+
+Each run keeps the suite it was measured with. Tables show the latest suite.

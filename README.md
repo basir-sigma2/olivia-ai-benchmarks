@@ -17,6 +17,8 @@ The suite is the one CSCS used for GLM-5.3 on Alps, which has the same GH200 and
 
 ## September 2026 baseline
 
+Measured with suite `olivia-v1`, without warm-up. Hot reruns with `olivia-v2` are in the queue.
+
 Each prompt is 1,024 tokens and each response 128. Throughput is output tokens per second across all requests,
 at 1–128 concurrent users. TPOT is the time per output token at one user. Peak / GPU is the best throughput
 at any concurrency, divided by the run's GPU count. The test is prompt-heavy and counts output tokens only, so one

@@ -239,10 +239,11 @@
       ],
       "properties": {
         "suite": {
-          "description": "olivia-v2 (current): one untimed warm-up wave before each point. olivia-v1: the same points measured cold.",
+          "description": "olivia-v3 (current): the suite runs twice on the same server and the second pass is recorded; each point starts with an untimed wave. olivia-v2: per-point wave only. olivia-v1: cold.",
           "enum": [
             "olivia-v1",
-            "olivia-v2"
+            "olivia-v2",
+            "olivia-v3"
           ]
         },
         "client": {
@@ -264,12 +265,17 @@
       ],
       "properties": {
         "server_chat_requests": {
-          "description": "Chat-completion requests counted in the server's own log for the whole suite, warm-up included.",
+          "description": "Chat-completion requests counted in the server's own log for the whole suite, untimed requests included.",
           "type": "integer",
           "minimum": 0
         },
         "notes": {
           "type": "string"
+        },
+        "timed_pass_compile_warnings": {
+          "description": "SGLang >= 0.5.20 only: 'compile after serving started' warnings logged after the timed pass began (should be 0).",
+          "type": "integer",
+          "minimum": 0
         }
       }
     },

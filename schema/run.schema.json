@@ -128,12 +128,12 @@
           ]
         },
         "params_b": {
-          "description": "Total parameters, billions.",
+          "description": "Total parameters in billions: the Hugging Face safetensors total of the served checkpoint.",
           "type": "number",
           "exclusiveMinimum": 0
         },
         "active_params_b": {
-          "description": "Active parameters per token for MoE models, billions; null if unknown.",
+          "description": "Active parameters per token for MoE models, in billions, as the model card states them; null if the card does not say.",
           "type": [
             "number",
             "null"

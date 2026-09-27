@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+deepseek-v4-flash_sglang_2n_tp4-pp2	conc-scaling	1024	128	4	1	0.80	102.02	921.40	189.13	8.39	8.41
+deepseek-v4-flash_sglang_2n_tp4-pp2	conc-scaling	1024	128	16	4	2.18	278.85	2518.35	234.52	12.60	12.99
+deepseek-v4-flash_sglang_2n_tp4-pp2	conc-scaling	1024	128	64	16	7.49	958.75	8658.70	281.89	14.59	15.54
+deepseek-v4-flash_sglang_2n_tp4-pp2	conc-scaling	1024	128	128	32	12.46	1594.65	14401.66	304.05	17.81	19.35
+deepseek-v4-flash_sglang_2n_tp4-pp2	conc-scaling	1024	128	256	64	20.66	2644.91	23886.86	361.65	21.51	23.09
+deepseek-v4-flash_sglang_2n_tp4-pp2	conc-scaling	1024	128	512	128	30.49	3902.11	35240.89	632.20	27.78	32.12
+deepseek-v4-flash_sglang_2n_tp4-pp2	prefill	1024	32	16	8	11.40	364.90	12087.25	261.54	14.16	16.87
+deepseek-v4-flash_sglang_2n_tp4-pp2	prefill	4096	32	16	8	9.23	295.30	38130.51	311.37	17.83	23.77
+deepseek-v4-flash_sglang_2n_tp4-pp2	prefill	16384	32	16	8	7.58	242.51	124439.46	448.68	19.48	25.88
+deepseek-v4-flash_sglang_2n_tp4-pp2	decode	256	128	16	8	4.05	518.91	1572.94	271.21	13.39	14.04
+deepseek-v4-flash_sglang_2n_tp4-pp2	decode	256	512	16	8	1.09	557.48	840.58	253.22	13.88	14.01
+deepseek-v4-flash_sglang_2n_tp4-pp2	decode	256	1024	16	8	0.57	583.81	732.04	282.25	13.44	13.54

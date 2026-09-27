@@ -1,8 +1,8 @@
 schema_version: 1
-id: "2026-09-27_deepseek-v4-pro_sglang_12gpu_tp4-pp3"
+id: "2026-09-27_deepseek-v4-pro_sglang_12gpu_tp4-pp3_cold"
 date: "2026-09-27"
 submitter: basir-sigma2
-job_id: 2372371
+job_id: 2368757
 
 system:
   name: Olivia
@@ -50,11 +50,11 @@ parallelism: {tp: 4, pp: 3, ep: 1, dp: 1, notes: "tensor parallel over the 4 GPU
 cuda_graphs: true
 
 benchmark:
-  suite: olivia-v3
+  suite: olivia-v1
   client: vllm bench serve
   client_version: "0.27.1"
 
 validation:
-  server_chat_requests: 2738
+  server_chat_requests: 1076
 
-notes: "One SGLang server over 3 nodes (--nnodes 3 --node-rank N --dist-init-addr <first node>, one launch per node via srun --network=disable_rdzv_get). The FP4 experts need --moe-runner-backend marlin. SGLang chose the fp8 KV cache and the dsv4 attention backend itself. Networking: the image's NCCL 2.28.9 with the host's aws-ofi-nccl 1.19.1 plugin and Cray libfabric 2.3.1, GPUDirect RDMA over all 4 NICs. --skip-server-warmup is harmless here: the suite's untimed pass warms the server."
+notes: "One SGLang server over 3 nodes (--nnodes 3 --node-rank N --dist-init-addr <first node>, one launch per node via srun --network=disable_rdzv_get). The FP4 experts need --moe-runner-backend marlin. SGLang chose the fp8 KV cache and the dsv4 attention backend itself. Networking: the image's NCCL 2.28.9 with the host's aws-ofi-nccl 1.19.1 plugin and Cray libfabric 2.3.1, GPUDirect RDMA over all 4 NICs. TTFT at 1 user (1.18 s) is above the 4-user value (0.53 s): server warm-up was skipped and this is the run's first point."

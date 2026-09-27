@@ -1,8 +1,8 @@
 schema_version: 1
-id: "2026-09-27_glm-5.2_vllm_12gpu_tp4-pp3"
+id: "2026-09-27_glm-5.2_vllm_12gpu_tp4-pp3_cold"
 date: "2026-09-27"
 submitter: basir-sigma2
-job_id: 2372370
+job_id: 2368756
 
 system:
   name: Olivia
@@ -45,11 +45,11 @@ parallelism: {tp: 4, pp: 3, ep: 1, dp: 1, notes: "tensor parallel over the 4 GPU
 cuda_graphs: true
 
 benchmark:
-  suite: olivia-v3
+  suite: olivia-v1
   client: vllm bench serve
   client_version: "0.27.1"
 
 validation:
-  server_chat_requests: 2738
+  server_chat_requests: 1076
 
-notes: "One vLLM server over 3 nodes: one launch per node with --nnodes 3 --node-rank N --master-addr <first node>, started by srun --network=disable_rdzv_get. NCCL runs over Slingshot through the image's aws-ofi-nccl plugin, with GPUDirect RDMA via dma-buf."
+notes: "One vLLM server over 3 nodes: one launch per node with --nnodes 3 --node-rank N --master-addr <first node>, started by srun --network=disable_rdzv_get. NCCL runs over Slingshot through the image's aws-ofi-nccl plugin, with GPUDirect RDMA via dma-buf. TTFT at 1 user (1.75 s) is above the 4-user value (0.92 s); the suite does no warm-up and this is the run's first point."

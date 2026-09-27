@@ -31,10 +31,16 @@ POINTS_V1 = (
     + [("decode", 256, o, 16, 8) for o in (128, 512, 1024)]
 )
 SUITES = {
-    "olivia-v1": POINTS_V1,  # measured cold: no warm-up
-    "olivia-v2": POINTS_V1,  # measured hot: one untimed wave (concurrency requests) before each point
+    "olivia-v1": POINTS_V1,  # cold: no warm-up
+    "olivia-v2": POINTS_V1,  # one untimed wave (concurrency requests) before each point
+    "olivia-v3": POINTS_V1,  # the v2 suite twice on the same server, second pass recorded
 }
-WARMUP = {"olivia-v1": lambda conc: 0, "olivia-v2": lambda conc: conc}  # untimed requests per point
+# untimed requests the server also sees for a point, given its prompts and concurrency
+UNTIMED = {
+    "olivia-v1": lambda prompts, conc: 0,
+    "olivia-v2": lambda prompts, conc: conc,
+    "olivia-v3": lambda prompts, conc: conc + (prompts + conc),
+}
 
 
 def plain(value):
@@ -139,12 +145,12 @@ def check_run(folder, validator):
         errors.append(f"result.tsv point {pt[0]} in={pt[1]} out={pt[2]} prompts={pt[3]} c={pt[4]} {why}")
 
     # The server's own log is the check that the client measured this server and nothing else did.
-    warm = WARMUP[run["benchmark"]["suite"]]
-    expected = sum(p["prompts"] + warm(p["conc"]) for p in points)
+    untimed = UNTIMED[run["benchmark"]["suite"]]
+    expected = sum(p["prompts"] + untimed(p["prompts"], p["conc"]) for p in points)
     logged = run["validation"]["server_chat_requests"]
     slack = len(points) + 1  # one warm-up request per point and one at server start, at most
     if not expected <= logged <= expected + slack:
-        errors.append(f"server logged {logged} chat requests; the suite sent {expected} with warm-up "
+        errors.append(f"server logged {logged} chat requests; the suite sent {expected} including untimed requests "
                       f"(allowed {expected}..{expected + slack}); another job may have shared the server")
     if errors:
         return None, errors
@@ -187,7 +193,7 @@ def main():
         args.out.parent.mkdir(parents=True, exist_ok=True)
         doc = {
             "schema_version": 1,
-            "suites": {name: {"warmup_per_point": "concurrency" if name != "olivia-v1" else 0,
+            "suites": {name: {"warm_pass": name == "olivia-v3", "warmup_wave_per_point": name != "olivia-v1",
                               "points": [dict(zip(("scenario", "in_len", "out_len", "prompts", "conc"), pt)) for pt in pts]}
                        for name, pts in SUITES.items()},
             "latest_suite": max(r["benchmark"]["suite"] for r in runs),

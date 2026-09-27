@@ -1,4 +1,4 @@
-# Method: suite `olivia-v2`
+# Method: suite `olivia-v3`
 
 ## Setup
 
@@ -7,12 +7,14 @@
   runs on the node that serves the API.
 - **Prompts.** Prompts are random token ids of fixed length. EOS is ignored, so every request generates exactly
   `out_len` tokens.
-- **Warm-up.** Every point starts with one untimed wave: as many requests as the point's concurrency, with the
-  point's own prompt and answer lengths. The server is measured hot, the way a running service is.
+- **Warm-up.** The suite runs twice on the same server. The first pass is untimed and discarded; only the second
+  pass is recorded. Each point also starts with one untimed wave: as many requests as its concurrency, with its own
+  prompt and answer lengths. By the timed pass, every kernel and batch shape the suite uses has already run, so the
+  server is measured hot, the way a running service is.
 - **Server configuration.** Serve the model the way you would in production, without reasoning or tool-call
   parsers. Those parsers move tokens out of the counted output.
 
-## The 12 points (1,076 measured requests, 293 warm-up)
+## The 12 points (1,076 measured requests, 2,738 in total)
 
 | Scenario | Input tokens | Output tokens | Concurrency | Prompts |
 |---|---|---|---|---|
@@ -26,7 +28,8 @@ context length (`max_context` in `run.yaml`).
 
 ## Client command
 
-Run one command per point, using vLLM's client (`$SNAPSHOT` is the local model snapshot; the client only reads
+Run all 12 points once and discard the results (warm pass), then run them again and record them (timed pass). Run
+one command per point, using vLLM's client (`$SNAPSHOT` is the local model snapshot; the client only reads
 its tokenizer):
 
 ```bash
@@ -69,8 +72,11 @@ To keep runs valid:
   10000). Before the suite starts, check that `/v1/models` lists your served model name.
 - **Count the requests.** After the suite, count the chat-completion requests in the server's own log and put
   the number in `validation.server_chat_requests`.
-  - It must equal the suite's total including warm-up: 1,369 when all 12 points run (1,076 measured plus 293
-    warm-up). Some SGLang versions log one more request of their own at start-up.
+  - It must equal the suite's total including untimed requests: 2,738 when all 12 points run (two passes of 1,076
+    prompts plus 293 warm-up requests each). Some SGLang versions log one more request of their own at start-up.
+  - SGLang 0.5.20 and later log "compile after serving started" when a Triton kernel compiles while serving. Count
+    those lines after the timed pass starts and record the number in `validation.timed_pass_compile_warnings`. It
+    should be 0.
   - Any other number means another job reached your server, or your client reached another server. Rerun.
   - `scripts/build.py` enforces this.
 - **No failed requests.** A failed request in any point invalidates the run.
@@ -88,7 +94,10 @@ To keep runs valid:
 
 ## Suite versions
 
-- **`olivia-v2`** (current, from 27 September 2026): the 12 points, each preceded by one untimed warm-up wave.
+- **`olivia-v3`** (current, from 27 September 2026): the `olivia-v2` suite twice on the same server, with only the
+  second pass recorded.
+- **`olivia-v2`** (27 September 2026): the 12 points, each preceded by one untimed warm-up wave. That was not
+  enough: SGLang 0.5.20 still compiled Triton kernels during timed points, and one 1-user request took 11.5 s.
 - **`olivia-v1`** (27 September 2026): the same 12 points measured cold, like CSCS's `bench_suite.sh`. On
   multi-node servers the first point then includes one-time costs: time to first token at 1 user was about twice
   the 4-user value.

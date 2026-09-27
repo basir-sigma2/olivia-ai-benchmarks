@@ -131,12 +131,13 @@
   }
   document.getElementById("suite").textContent = latest;
   if (latest === "olivia-v1") document.getElementById("warm").textContent = "measured cold (no warm-up)";
+  if (latest === "olivia-v3") document.getElementById("warm").textContent = "measured hot (second of two passes)";
   const box = document.getElementById("showall");
   if (rows.some(x => x.suite !== latest)) document.getElementById("older").hidden = false;
   const maxPeak = Math.max(...rows.map(x => x.peak || 0));
   const render = () => {
     tbody.innerHTML = rows.filter(x => box.checked || x.suite === latest).map(x => `<tr>
-      <td class="model"><a href="${REPO + esc(x.r.path)}">${esc(x.r.model.repo.split("/")[1])}</a>${x.r.cuda_graphs ? "" : '<span class="tag">eager</span>'}${x.suite === latest ? "" : `<span class="tag cold" title="measured without warm-up">${esc(x.suite === "olivia-v1" ? "cold" : x.suite)}</span>`}
+      <td class="model"><a href="${REPO + esc(x.r.path)}">${esc(x.r.model.repo.split("/")[1])}</a>${x.r.cuda_graphs ? "" : '<span class="tag">eager</span>'}${x.suite === latest ? "" : `<span class="tag cold" title="earlier suite: ${esc(x.suite)}">${esc(x.suite === "olivia-v1" ? "cold" : x.suite)}</span>`}
         <span class="sub">${x.sub.map(t => `<span class="seg">${esc(t)}</span>`).join(" · ")}</span></td>
       <td>${fmt(x.c1)}</td><td>${fmt(x.c4)}</td><td>${fmt(x.c16)}</td><td>${fmt(x.c32)}</td><td>${fmt(x.c64)}</td><td>${fmt(x.c128)}</td>
       <td>${fmt(x.tpot, 1)}</td><td>${fmt(x.ttft)}</td><td>${fmt(x.p16k, 2)}</td>

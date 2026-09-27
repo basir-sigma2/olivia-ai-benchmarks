@@ -1,6 +1,6 @@
 # Adding a result
 
-1. **Run the suite.** Follow [METHOD.md](METHOD.md), and use the current suite (`olivia-v2`, with warm-up). One run
+1. **Run the suite.** Follow [METHOD.md](METHOD.md), and use the current suite (`olivia-v3`: an untimed pass, then the timed one). One run
    means one server configuration.
 2. **Make the folder.** Create `results/<YYYY-MM-DD>_<model>_<engine>_<N>gpu[_<variant>]/` in lower case,
    using the date the suite ran. Put two files in it:

@@ -1,8 +1,8 @@
 schema_version: 1
-id: "2026-09-27_qwen3.6-35b-a3b_sglang_1gpu"
+id: "2026-09-27_qwen3.8-27b_sglang_2gpu_cold"
 date: "2026-09-27"
 submitter: basir-sigma2
-job_id: 2372457
+job_id: 2368885
 
 system:
   name: Olivia
@@ -12,16 +12,16 @@ system:
   gpu_compute_mode: Exclusive_Process
   interconnect: HPE Slingshot-11, 4 NICs per node
 nodes: 1
-gpus: 1
-max_context: 131072
+gpus: 2
+max_context: 262144
 
 model:
-  repo: Qwen/Qwen3.6-35B-A3B-FP8
-  revision: 95a723d08a9490559dae23d0cff1d9466213d989
-  architecture: Qwen3_5MoeForConditionalGeneration
-  kind: moe
-  params_b: 36.0
-  active_params_b: 3
+  repo: Qwen/Qwen3.8-27B-FP8
+  revision: 017b9c7af6b5689d5dd426a76e0bc077eb5ca20a
+  architecture: Qwen3_5ForConditionalGeneration
+  kind: dense
+  params_b: 27.8
+  active_params_b: null
   precision: "fp8"
   weights: "fp8 block-quantised checkpoint"
 
@@ -31,15 +31,17 @@ engine:
   image: "docker://lmsysorg/sglang:latest (arm64), pulled 2026-08-23"
   sif_sha256: "7ae8343bbb051ce6d66becc88b643aef9735f1b2dd0cc51fdecdc0d5b346a50b"
   torch: "2.13.0+cu130"
-  flags: "--tp 1 --context-length 131072 --attention-backend flashinfer --mm-attention-backend sdpa --disable-fast-image-processor"
+  flags: "--tp 2 --context-length 262144 --attention-backend flashinfer --mm-attention-backend sdpa --enable-multimodal --disable-fast-image-processor"
   env: {}
-parallelism: {tp: 1, pp: 1, ep: 1, dp: 1}
+parallelism: {tp: 2, pp: 1, ep: 1, dp: 1}
 cuda_graphs: true
 
 benchmark:
-  suite: olivia-v3
+  suite: olivia-v1
   client: vllm bench serve
   client_version: "0.27.1"
 
 validation:
-  server_chat_requests: 2739
+  server_chat_requests: 1077
+
+notes: "The layout Sigma2 runs this model with in production (tp 2, 256k context)."

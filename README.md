@@ -17,30 +17,27 @@ The suite is the one CSCS used for GLM-5.3 on Alps, which has the same GH200 and
 
 ## September 2026 baseline
 
-Measured with suite `olivia-v1`, without warm-up. Hot reruns with `olivia-v3` (an untimed pass, then the timed one)
-are in the queue.
-
-Each prompt is 1,024 tokens and each response 128. Throughput is output tokens per second across all requests,
-at 1–128 concurrent users. TPOT is the time per output token at one user. Peak / GPU is the best throughput
-at any concurrency, divided by the run's GPU count. The test is prompt-heavy and counts output tokens only, so one
-user's figure sits well below the decode speed, which is 1000 / TPOT (77 tokens/s for GLM-5.2, for example).
+Measured with suite `olivia-v3`: each server runs the suite twice, and only the second pass is recorded. Each prompt
+is 1,024 tokens and each response 128. Throughput is output tokens per second across all requests, at 1–128
+concurrent users. TPOT is the time per output token at one user, so one user's decode speed is 1000 / TPOT. Peak /
+GPU is the best throughput at any concurrency, divided by the run's GPU count.
 
 | Model | Engine | GPUs | 1 | 16 | 64 | 128 | TPOT ms | Peak / GPU |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| [Apertus-v1.5-8B](results/2026-09-27_apertus-1.5-8b_vllm_1gpu) | vLLM 0.23.1rc1.dev (Swiss AI) | 1 | 163 | 1,749 | 3,754 | 4,453 | 5.8 | 4,453 |
-| [borealis2-26b-a4b-preview](results/2026-09-27_borealis2-26b-a4b_sglang_1gpu) | SGLang 0.5.18 | 1 | 159 | 1,073 | 1,821 | 1,897 | 5.2 | 1,897 |
-| [borealis-27b](results/2026-09-27_borealis-27b_vllm_1gpu) | vLLM 0.27.1 | 1 | 70 | 683 | 1,015 | 1,033 | 12.3 | 1,128 |
-| [Qwen3.8-27B-FP8](results/2026-09-27_qwen3.8-27b_sglang_1gpu) | SGLang 0.5.18 | 1 | 83 | 725 | 891 | 890 | 11.0 | 1,000 |
-| [Qwen3.8-27B-FP8](results/2026-09-27_qwen3.8-27b_sglang_2gpu) | SGLang 0.5.18 | 2 | 122 | 1,073 | 2,260 | 1,721 | 7.5 | 1,130 |
-| [Qwen3.6-35B-A3B-FP8](results/2026-09-27_qwen3.6-35b-a3b_sglang_1gpu) | SGLang 0.5.18 | 1 | 235 | 1,792 | 3,385 | 3,099 | 3.7 | 3,385 |
-| [Apertus-v1.5-70B](results/2026-09-27_apertus-1.5-70b_vllm_2gpu_eager) (eager) | vLLM 0.23.1rc1.dev (Swiss AI) | 2 | 10 | 142 | 452 | 673 | 96.4 | 337 |
-| [DeepSeek-V4-Flash-FP8](results/2026-09-27_deepseek-v4-flash_sglang_4gpu) | SGLang 0.5.17 | 4 | 101 | 928 | 1,810 | 2,226 | 6.6 | 557 |
-| [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_tp4-pp3) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 38 | 347 | 925 | 1,250 | 13.0 | 104 |
-| [DeepSeek-V4-Pro](results/2026-09-27_deepseek-v4-pro_sglang_12gpu_tp4-pp3) | SGLang 0.5.17 | 12 (3 nodes) | 41 | 390 | 1,058 | 1,450 | 15.3 | 121 |
+| [Apertus-v1.5-8B](results/2026-09-27_apertus-1.5-8b_vllm_1gpu) | vLLM 0.23.1rc1.dev (Swiss AI) | 1 | 170 | 1,753 | 3,778 | 4,476 | 5.8 | 4,476 |
+| [borealis2-26b-a4b-preview](results/2026-09-27_borealis2-26b-a4b_sglang_1gpu) | SGLang 0.5.18 | 1 | 178 | 1,070 | 1,806 | 1,886 | 5.2 | 1,886 |
+| [borealis-27b](results/2026-09-27_borealis-27b_vllm_1gpu) | vLLM 0.27.1 | 1 | 78 | 678 | 1,014 | 1,034 | 12.3 | 1,125 |
+| [Qwen3.8-27B-FP8](results/2026-09-27_qwen3.8-27b_sglang_1gpu) | SGLang 0.5.18 | 1 | 87 | 764 | 911 | 911 | 11.2 | 985 |
+| [Qwen3.8-27B-FP8](results/2026-09-27_qwen3.8-27b_sglang_2gpu) | SGLang 0.5.18 | 2 | 127 | 1,093 | 2,267 | 1,710 | 7.4 | 1,134 |
+| [Qwen3.6-35B-A3B-FP8](results/2026-09-27_qwen3.6-35b-a3b_sglang_1gpu) | SGLang 0.5.18 | 1 | 252 | 1,833 | 3,485 | 3,224 | 3.7 | 3,485 |
+| [Apertus-v1.5-70B](results/2026-09-27_apertus-1.5-70b_vllm_2gpu_eager) (eager) | vLLM 0.23.1rc1.dev (Swiss AI) | 2 | 11 | 144 | 479 | 721 | 93.1 | 361 |
+| [Qwen3.8-Flash-Next-FP8](results/2026-09-27_qwen3.8-flash-next_sglang_4gpu_ep4) | SGLang 0.5.20 | 4 | 132 | 1,073 | 2,413 | 2,761 | 6.1 | 690 |
+| [DeepSeek-V4-Flash-FP8](results/2026-09-27_deepseek-v4-flash_sglang_4gpu) | SGLang 0.5.17 | 4 | 126 | 980 | 1,802 | 2,224 | 6.6 | 556 |
 
-The Apertus-v1.5-70B run is eager: CUDA-graph capture crashes in that image. Compare it only with other eager
-runs. GLM-5.2 and DeepSeek-V4-Pro each run as one server over three nodes: tensor parallel inside each node, one
-pipeline stage per node. Their 1-user figures include first-request costs, since the suite does no warm-up. Prefill, decode and total-throughput numbers for every run are in its `result.tsv` and in the live table.
+The Apertus-v1.5-70B run is eager: CUDA-graph capture crashes in that image. Compare it only with other eager runs.
+Prefill, decode and total-throughput numbers for every run are in its `result.tsv` and in the live table.
+Multi-node runs (GLM-5.2 and DeepSeek-V4-Pro on 3–4 nodes, and the expert-parallel layouts) are queued on `olivia-v3`.
+The first September runs, measured cold (`olivia-v1`), are kept as `*_cold` and hidden in the live table by default.
 
 ## Adding a result
 

@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+qwen3.8-27b_sglang_2gpu	conc-scaling	1024	128	4	1	0.95	122.13	1149.46	102.08	7.45	7.46
+qwen3.8-27b_sglang_2gpu	conc-scaling	1024	128	16	4	3.13	401.10	3774.18	232.85	8.21	8.50
+qwen3.8-27b_sglang_2gpu	conc-scaling	1024	128	64	16	8.38	1072.93	10095.35	655.15	9.86	13.44
+qwen3.8-27b_sglang_2gpu	conc-scaling	1024	128	128	32	13.48	1725.35	16234.24	789.99	12.45	19.97
+qwen3.8-27b_sglang_2gpu	conc-scaling	1024	128	256	64	17.66	2260.13	21267.23	1277.44	18.44	33.77
+qwen3.8-27b_sglang_2gpu	conc-scaling	1024	128	512	128	13.44	1720.54	16189.29	5496.87	27.14	42.90
+qwen3.8-27b_sglang_2gpu	prefill	1024	32	16	8	11.45	366.26	12686.93	428.06	8.70	11.49
+qwen3.8-27b_sglang_2gpu	prefill	4096	32	16	8	5.26	168.21	21974.95	1035.22	15.65	33.22
+qwen3.8-27b_sglang_2gpu	prefill	16384	32	16	8	1.40	44.86	23087.11	3602.44	67.81	142.27
+qwen3.8-27b_sglang_2gpu	decode	256	128	16	8	6.36	814.60	2777.50	203.96	8.28	8.52
+qwen3.8-27b_sglang_2gpu	decode	256	512	16	8	1.83	935.95	1499.79	148.86	8.27	8.28
+qwen3.8-27b_sglang_2gpu	decode	256	1024	16	8	0.93	949.59	1235.61	152.00	8.28	8.29

@@ -2,7 +2,7 @@ schema_version: 1
 id: "2026-09-27_apertus-1.5-8b_vllm_1gpu"
 date: "2026-09-27"
 submitter: basir-sigma2
-job_id: 2368753
+job_id: 2372456
 
 system:
   name: Olivia
@@ -37,11 +37,11 @@ parallelism: {tp: 1, pp: 1, ep: 1, dp: 1}
 cuda_graphs: true
 
 benchmark:
-  suite: olivia-v1
+  suite: olivia-v3
   client: vllm bench serve
   client_version: "0.27.1"
 
 validation:
-  server_chat_requests: 1076
+  server_chat_requests: 2738
 
 notes: "Apertus 1.5 needs Swiss AI's vLLM build; stock vLLM 0.27.1 cannot load the architecture."

@@ -21,7 +21,7 @@ model:
   architecture: DeepseekV4ForCausalLM
   kind: moe
   params_b: 291.0
-  active_params_b: null
+  active_params_b: 13
   precision: "fp8"
   weights: "fp8 block-quantised checkpoint"
 

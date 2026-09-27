@@ -1,0 +1,45 @@
+schema_version: 1
+id: "2026-09-27_deepseek-v4-flash_sglang_4gpu"
+date: "2026-09-27"
+submitter: basir-sigma2
+job_id: 2368888
+
+system:
+  name: Olivia
+  operator: Sigma2 / NRIS (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 1
+gpus: 4
+max_context: 262144
+
+model:
+  repo: sgl-project/DeepSeek-V4-Flash-FP8
+  revision: ae01d80c06cdfe30581edfd0e1c5449dc7ed7f17
+  architecture: DeepseekV4ForCausalLM
+  kind: moe
+  params_b: 291.0
+  active_params_b: null
+  precision: "fp8"
+  weights: "fp8 block-quantised checkpoint"
+
+engine:
+  name: sglang
+  version: "0.5.17"
+  image: "docker://lmsysorg/sglang:latest (arm64), pulled 2026-08-11"
+  sif_sha256: "06ba8f52674d1fd2505978a872d15df9ce15ab4295e556f1fee754708541db1a"
+  torch: "2.11.0+cu130"
+  flags: "--tp 4 --context-length 262144"
+  env: {}
+parallelism: {tp: 4, pp: 1, ep: 1, dp: 1}
+cuda_graphs: true
+
+benchmark:
+  suite: olivia-v1
+  client: vllm bench serve
+  client_version: "0.27.1"
+
+validation:
+  server_chat_requests: 1076

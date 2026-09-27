@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Olivia AI benchmarks</title>
+<meta name="description" content="LLM inference benchmarks on Olivia's GH200 nodes: one fixed suite, every model revision, engine and flag recorded.">
+<style>
+  :root {
+    --bg: #f7f8f9; --panel: #ffffff; --ink: #16202a; --muted: #5b6874; --line: #dde2e7;
+    --accent: #0b6e7f; --accent-soft: #d8ecef; --warn: #9a5b00; --warn-soft: #fbeed8;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11161b; --panel: #171e24; --ink: #e5eaee; --muted: #93a1ad; --line: #28323b;
+      --accent: #5cc3d3; --accent-soft: #173a41; --warn: #f0b457; --warn-soft: #3a2c14;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding-inline: 16px; padding-block: 32px 48px;
+  }
+  main { max-width: 1180px; margin: 0 auto; display: grid; gap: 20px; }
+  h1 { margin: 0; font-size: 1.6rem; letter-spacing: -0.01em; text-wrap: balance; }
+  p { margin: 0; max-width: 72ch; color: var(--muted); }
+  a { color: var(--accent); }
+  nav { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.9rem; }
+  .spec { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+  th, td { padding: 9px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+  th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--panel); z-index: 1; }
+  @media (max-width: 720px) {
+    th:first-child, td:first-child { white-space: normal; min-width: 10.5rem; max-width: 12rem;
+                                     box-shadow: 1px 0 0 var(--line); }
+  }
+  thead th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+             font-weight: 600; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--panel); }
+  thead th[aria-sort] { color: var(--ink); }
+  thead th[aria-sort="descending"]::after { content: " ↓"; }
+  thead th[aria-sort="ascending"]::after { content: " ↑"; }
+  thead tr.group th { cursor: default; text-align: center; border-bottom: none; padding-bottom: 0; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--accent-soft); }
+  .model a { font-weight: 600; text-decoration: none; }
+  .model a:hover { text-decoration: underline; }
+  .sub { display: block; font-size: 0.78rem; color: var(--muted); }
+  .seg { white-space: nowrap; }
+  .tag { display: inline-block; font-size: 0.7rem; padding: 0 6px; border-radius: 4px; margin-left: 6px;
+         background: var(--warn-soft); color: var(--warn); vertical-align: 1px; }
+  .peak { display: grid; grid-template-columns: auto 56px; gap: 8px; align-items: center; justify-content: end; }
+  .bar { height: 6px; border-radius: 3px; background: var(--accent); justify-self: start; }
+  .dim { color: var(--muted); }
+  footer { font-size: 0.82rem; color: var(--muted); display: grid; gap: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <header style="display:grid;gap:10px">
+    <h1>Olivia AI benchmarks</h1>
+    <p>LLM inference on Olivia (Sigma2 / NRIS), measured with one fixed suite. Each run records its exact model
+      revision, engine, container and flags.</p>
+    <div class="spec">4 × NVIDIA GH200 (96 GB HBM3) per node · HPE Slingshot-11 · suite olivia-v1: 1,024-token prompts,
+      128 output tokens, 1–128 concurrent users</div>
+    <nav>
+      <a href="https://github.com/basir-sigma2/olivia-ai-benchmarks">Repository</a>
+      <a href="https://github.com/basir-sigma2/olivia-ai-benchmarks/blob/main/METHOD.md">Method</a>
+      <a href="https://github.com/basir-sigma2/olivia-ai-benchmarks/blob/main/CONTRIBUTING.md">Add a result</a>
+      <a href="results.json">results.json</a>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <table id="t">
+      <thead>
+        <tr class="group"><th></th><th colspan="6">Output tokens/s at N concurrent users</th><th colspan="2">1 user</th><th>Prefill 16k</th><th></th></tr>
+        <tr>
+          <th data-k="name">Model</th>
+          <th data-k="c1">1</th><th data-k="c4">4</th><th data-k="c16">16</th><th data-k="c32">32</th><th data-k="c64">64</th><th data-k="c128">128</th>
+          <th data-k="tpot" title="Mean time per output token, ms">TPOT ms</th>
+          <th data-k="ttft" title="Mean time to first token, ms">TTFT ms</th>
+          <th data-k="p16k" title="Mean time to first token for a 16,384-token prompt at 8 users, s">TTFT s</th>
+          <th data-k="peak" title="Best output tokens/s at any concurrency, divided by GPUs">Peak / GPU</th>
+        </tr>
+      </thead>
+      <tbody><tr><td colspan="11" class="dim">Loading results.json…</td></tr></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <div>Output tokens/s counts generated tokens across all requests. Eager runs (no CUDA graphs) are tagged and
+      are not comparable with graph-mode runs. Prefill and decode points for every run are in its result.tsv.</div>
+    <div>Scenarios from CSCS's GLM-5.3 suite (<a href="https://github.com/andresnowak/glm-5.3-inference">andresnowak/glm-5.3-inference</a>).
+      Results CC BY 4.0.</div>
+  </footer>
+</main>
+
+<script>
+(async function () {
+  const REPO = "https://github.com/basir-sigma2/olivia-ai-benchmarks/tree/main/";
+  const tbody = document.querySelector("#t tbody");
+  const fmt = (v, d = 0) => v == null ? "–" : v.toLocaleString("en-US", { maximumFractionDigits: d, minimumFractionDigits: d });
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  let rows;
+  try {
+    const doc = await (await fetch("results.json", { cache: "no-cache" })).json();
+    rows = doc.runs.map(r => {
+      const s = r.summary, by = s.out_tok_s_by_conc, p = r.parallelism;
+      const layout = ["tp", "pp", "ep", "dp"].filter(k => p[k] > 1).map(k => k + p[k]).join(" × ");
+      const engine = { sglang: "SGLang", vllm: "vLLM" }[r.engine.name] || r.engine.name;
+      return {
+        r, name: r.model.repo.split("/")[1] + " " + r.gpus,
+        c1: by["1"], c4: by["4"], c16: by["16"], c32: by["32"], c64: by["64"], c128: by["128"],
+        tpot: s.tpot_ms_c1, ttft: s.ttft_ms_c1, p16k: s.prefill_ttft_ms["16384"] == null ? null : s.prefill_ttft_ms["16384"] / 1000,
+        peak: s.peak_out_tok_s_per_gpu,
+        sub: [`${engine} ${r.engine.version.split("+")[0]}`, `${r.gpus} GPU${r.gpus > 1 ? "s" : ""}${layout ? " (" + layout + ")" : ""}${r.nodes > 1 ? " on " + r.nodes + " nodes" : ""}`, r.model.precision, r.date],
+      };
+    });
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="11" class="dim">Could not load results.json (${esc(e.message)}).</td></tr>`;
+    return;
+  }
+  const maxPeak = Math.max(...rows.map(x => x.peak || 0));
+  const render = () => {
+    tbody.innerHTML = rows.map(x => `<tr>
+      <td class="model"><a href="${REPO + esc(x.r.path)}">${esc(x.r.model.repo.split("/")[1])}</a>${x.r.cuda_graphs ? "" : '<span class="tag">eager</span>'}
+        <span class="sub">${x.sub.map(t => `<span class="seg">${esc(t)}</span>`).join(" · ")}</span></td>
+      <td>${fmt(x.c1)}</td><td>${fmt(x.c4)}</td><td>${fmt(x.c16)}</td><td>${fmt(x.c32)}</td><td>${fmt(x.c64)}</td><td>${fmt(x.c128)}</td>
+      <td>${fmt(x.tpot, 1)}</td><td>${fmt(x.ttft)}</td><td>${fmt(x.p16k, 2)}</td>
+      <td><div class="peak"><span>${fmt(x.peak)}</span><span class="bar" style="width:${Math.max(4, Math.round(56 * (x.peak || 0) / maxPeak))}px"></span></div></td>
+    </tr>`).join("");
+  };
+  let key = "peak", dir = -1;
+  const sort = () => {
+    rows.sort((a, b) => {
+      const va = a[key], vb = b[key];
+      if (va == null) return 1; if (vb == null) return -1;
+      return (typeof va === "string" ? va.localeCompare(vb) : va - vb) * dir;
+    });
+    document.querySelectorAll("th[data-k]").forEach(th => {
+      if (th.dataset.k === key) th.setAttribute("aria-sort", dir < 0 ? "descending" : "ascending");
+      else th.removeAttribute("aria-sort");
+    });
+    render();
+  };
+  document.querySelectorAll("th[data-k]").forEach(th => th.addEventListener("click", () => {
+    const k = th.dataset.k;
+    dir = k === key ? -dir : (["name", "tpot", "ttft", "p16k"].includes(k) ? 1 : -1);
+    key = k; sort();
+  }));
+  sort();
+})();
+</script>
+</body>
+</html>

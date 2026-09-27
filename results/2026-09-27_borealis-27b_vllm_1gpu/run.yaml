@@ -1,0 +1,46 @@
+schema_version: 1
+id: "2026-09-27_borealis-27b_vllm_1gpu"
+date: "2026-09-27"
+submitter: basir-sigma2
+job_id: 2368886
+
+system:
+  name: Olivia
+  operator: Sigma2 / NRIS (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 1
+gpus: 1
+max_context: 131072
+
+model:
+  repo: NbAiLab/borealis-27b
+  revision: d73f3ba0f08e352b76b68d3ee08af53c0c8fd965
+  architecture: Gemma3ForConditionalGeneration
+  kind: dense
+  params_b: 27.4
+  active_params_b: null
+  precision: "fp8 (dynamic)"
+  weights: "bf16 checkpoint, served as dynamic fp8 (--quantization fp8)"
+
+engine:
+  name: vllm
+  version: "0.27.1"
+  image: "docker://vllm/vllm-openai:v0.27.1-aarch64-cu129-ubuntu2404"
+  sif_sha256: "59ff0b4a3a1be5e98c699c940943c62c5c4406ab90060008226a383273bf8701"
+  torch: "2.13.0+cu129"
+  flags: "--tensor-parallel-size 1 --quantization fp8 --max-model-len 131072 --gpu-memory-utilization 0.90"
+  env:
+    VLLM_WORKER_MULTIPROC_METHOD: "spawn"
+parallelism: {tp: 1, pp: 1, ep: 1, dp: 1}
+cuda_graphs: true
+
+benchmark:
+  suite: olivia-v1
+  client: vllm bench serve
+  client_version: "0.27.1"
+
+validation:
+  server_chat_requests: 1076

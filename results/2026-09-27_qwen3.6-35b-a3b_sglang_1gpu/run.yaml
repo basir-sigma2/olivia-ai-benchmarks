@@ -1,0 +1,45 @@
+schema_version: 1
+id: "2026-09-27_qwen3.6-35b-a3b_sglang_1gpu"
+date: "2026-09-27"
+submitter: basir-sigma2
+job_id: 2368960
+
+system:
+  name: Olivia
+  operator: Sigma2 / NRIS (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 1
+gpus: 1
+max_context: 131072
+
+model:
+  repo: Qwen/Qwen3.6-35B-A3B-FP8
+  revision: 95a723d08a9490559dae23d0cff1d9466213d989
+  architecture: Qwen3_5MoeForConditionalGeneration
+  kind: moe
+  params_b: 36.0
+  active_params_b: 3
+  precision: "fp8"
+  weights: "fp8 block-quantised checkpoint"
+
+engine:
+  name: sglang
+  version: "0.5.18"
+  image: "docker://lmsysorg/sglang:latest (arm64), pulled 2026-08-23"
+  sif_sha256: "7ae8343bbb051ce6d66becc88b643aef9735f1b2dd0cc51fdecdc0d5b346a50b"
+  torch: "2.13.0+cu130"
+  flags: "--tp 1 --context-length 131072 --attention-backend flashinfer --mm-attention-backend sdpa --disable-fast-image-processor"
+  env: {}
+parallelism: {tp: 1, pp: 1, ep: 1, dp: 1}
+cuda_graphs: true
+
+benchmark:
+  suite: olivia-v1
+  client: vllm bench serve
+  client_version: "0.27.1"
+
+validation:
+  server_chat_requests: 1077

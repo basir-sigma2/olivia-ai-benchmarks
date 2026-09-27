@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/basir-sigma2/olivia-ai-benchmarks/blob/main/schema/run.schema.json",
+  "title": "Olivia AI benchmark run (run.yaml)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "date",
+    "submitter",
+    "system",
+    "nodes",
+    "gpus",
+    "max_context",
+    "model",
+    "engine",
+    "parallelism",
+    "cuda_graphs",
+    "benchmark",
+    "validation"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "description": "Must equal the folder name: <YYYY-MM-DD>_<model>_<engine>_<N>gpu[_<variant>], lower case.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}_[a-z0-9][a-z0-9._-]*$"
+    },
+    "date": {
+      "description": "Day the suite ran (ISO date).",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "submitter": {
+      "description": "GitHub handle of the person who ran it.",
+      "type": "string",
+      "minLength": 1
+    },
+    "job_id": {
+      "description": "Slurm job id, for the submitter's own cross-reference.",
+      "type": [
+        "integer",
+        "string"
+      ]
+    },
+    "system": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "gpu",
+        "gpus_per_node",
+        "interconnect"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "operator": {
+          "type": "string"
+        },
+        "partition": {
+          "type": "string"
+        },
+        "gpu": {
+          "type": "string"
+        },
+        "gpus_per_node": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "gpu_compute_mode": {
+          "type": "string"
+        },
+        "interconnect": {
+          "type": "string"
+        }
+      }
+    },
+    "nodes": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "gpus": {
+      "description": "GPUs the server used in total.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_context": {
+      "description": "Context length the server was started with. Suite points that do not fit (in + out + 512 > max_context) are skipped.",
+      "type": "integer",
+      "minimum": 1024
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repo",
+        "revision",
+        "architecture",
+        "kind",
+        "params_b",
+        "precision",
+        "weights"
+      ],
+      "properties": {
+        "repo": {
+          "description": "Hugging Face repo id.",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "revision": {
+          "description": "Full commit hash of the snapshot that was served.",
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "architecture": {
+          "description": "architectures[0] from config.json.",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "dense",
+            "moe"
+          ]
+        },
+        "params_b": {
+          "description": "Total parameters, billions.",
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "active_params_b": {
+          "description": "Active parameters per token for MoE models, billions; null if unknown.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "precision": {
+          "description": "Precision the weights run at, short: bf16, fp8, fp8 (dynamic), fp4, int4 (awq), ...",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 24
+        },
+        "weights": {
+          "description": "Checkpoint format and any quantisation applied at load time, in words.",
+          "type": "string"
+        }
+      }
+    },
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "image",
+        "flags"
+      ],
+      "properties": {
+        "name": {
+          "description": "sglang, vllm, or another OpenAI-compatible server.",
+          "type": "string",
+          "pattern": "^[a-z0-9_.-]+$"
+        },
+        "version": {
+          "description": "Exact package version inside the image.",
+          "type": "string"
+        },
+        "image": {
+          "description": "Where the container came from: registry reference, and pull date if the tag moves.",
+          "type": "string"
+        },
+        "sif_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "sha256 of the Apptainer image file that ran, for cross-reference."
+        },
+        "torch": {
+          "type": "string"
+        },
+        "flags": {
+          "description": "Server flags exactly as passed, without the model path, host and port.",
+          "type": "string"
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "parallelism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tp",
+        "pp",
+        "ep",
+        "dp"
+      ],
+      "properties": {
+        "tp": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pp": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ep": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "dp": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "cuda_graphs": {
+      "description": "false for eager runs (--enforce-eager, --disable-cuda-graph).",
+      "type": "boolean"
+    },
+    "benchmark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "client",
+        "client_version"
+      ],
+      "properties": {
+        "suite": {
+          "enum": [
+            "olivia-v1"
+          ]
+        },
+        "client": {
+          "enum": [
+            "vllm bench serve",
+            "sglang.benchmark.serving"
+          ]
+        },
+        "client_version": {
+          "type": "string"
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "server_chat_requests"
+      ],
+      "properties": {
+        "server_chat_requests": {
+          "description": "Chat-completion requests counted in the server's own log for the whole suite.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

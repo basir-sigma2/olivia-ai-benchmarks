@@ -1,0 +1,45 @@
+schema_version: 1
+id: "2026-09-27_borealis2-26b-a4b_sglang_1gpu"
+date: "2026-09-27"
+submitter: basir-sigma2
+job_id: 2368882
+
+system:
+  name: Olivia
+  operator: Sigma2 / NRIS (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 1
+gpus: 1
+max_context: 131072
+
+model:
+  repo: NbAiLab/borealis2-26b-a4b-preview
+  revision: cec2dbf47b554f68a0a6c28cfa37bb49d2ac814d
+  architecture: Gemma4ForConditionalGeneration
+  kind: moe
+  params_b: 25.8
+  active_params_b: 4
+  precision: "bf16"
+  weights: "bf16 checkpoint"
+
+engine:
+  name: sglang
+  version: "0.5.18"
+  image: "docker://lmsysorg/sglang:latest (arm64), pulled 2026-08-27"
+  sif_sha256: "eae9e9542207402cffa16977b99a5acad45ac287a754eb280ec95967e74cfbf1"
+  torch: "2.13.0+cu130"
+  flags: "--tp 1 --context-length 131072 --attention-backend triton --mm-attention-backend sdpa --enable-multimodal --disable-fast-image-processor"
+  env: {}
+parallelism: {tp: 1, pp: 1, ep: 1, dp: 1}
+cuda_graphs: true
+
+benchmark:
+  suite: olivia-v1
+  client: vllm bench serve
+  client_version: "0.27.1"
+
+validation:
+  server_chat_requests: 1077

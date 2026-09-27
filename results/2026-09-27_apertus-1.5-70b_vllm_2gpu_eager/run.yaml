@@ -1,0 +1,49 @@
+schema_version: 1
+id: "2026-09-27_apertus-1.5-70b_vllm_2gpu_eager"
+date: "2026-09-27"
+submitter: basir-sigma2
+job_id: 2368752
+
+system:
+  name: Olivia
+  operator: Sigma2 / NRIS (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 1
+gpus: 2
+max_context: 131072
+
+model:
+  repo: swiss-ai/Apertus-v1.5-70B
+  revision: 59e744e313e967811aefabde3732609b64201acc
+  architecture: Apertus1p5ForConditionalGeneration
+  kind: dense
+  params_b: 72.0
+  active_params_b: null
+  precision: "fp8 (dynamic)"
+  weights: "bf16 checkpoint, served as dynamic fp8 (--quantization fp8)"
+
+engine:
+  name: vllm
+  version: "0.23.1rc1.dev1029+ga601a9d99"
+  image: "docker://ghcr.io/swiss-ai/vllm_apertus_1.5_release:latest-arm64 (Swiss AI)"
+  sif_sha256: "a33b569ca4c26d1a7ba0ec6a3835bda51217ed50e265585ea4e48670fafb4775"
+  torch: "2.11.0+cu130"
+  flags: "--tensor-parallel-size 2 --quantization fp8 --enforce-eager --gpu-memory-utilization 0.9 --max-model-len 131072"
+  env:
+    VLLM_WORKER_MULTIPROC_METHOD: "spawn"
+    NCCL_CUMEM_ENABLE: "0"
+parallelism: {tp: 2, pp: 1, ep: 1, dp: 1}
+cuda_graphs: false
+
+benchmark:
+  suite: olivia-v1
+  client: vllm bench serve
+  client_version: "0.27.1"
+
+validation:
+  server_chat_requests: 1076
+
+notes: "Eager mode: CUDA-graph capture crashes in this image (illegal memory access), so graphs are off. Not comparable with graph-mode runs."

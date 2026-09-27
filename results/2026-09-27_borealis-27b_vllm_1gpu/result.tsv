@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+borealis-27b_vllm_1gpu	conc-scaling	1024	128	4	1	0.55	70.37	638.12	262.35	12.26	12.27
+borealis-27b_vllm_1gpu	conc-scaling	1024	128	16	4	2.10	268.58	2434.95	217.48	13.29	14.75
+borealis-27b_vllm_1gpu	conc-scaling	1024	128	64	16	5.33	682.67	6188.59	699.33	18.07	24.93
+borealis-27b_vllm_1gpu	conc-scaling	1024	128	128	32	8.81	1128.08	10227.60	686.09	23.11	36.24
+borealis-27b_vllm_1gpu	conc-scaling	1024	128	256	64	7.93	1015.41	9206.10	1996.71	47.65	61.03
+borealis-27b_vllm_1gpu	conc-scaling	1024	128	512	128	8.07	1032.67	9362.30	5654.81	75.44	91.24
+borealis-27b_vllm_1gpu	prefill	1024	32	16	8	7.51	240.19	7989.68	569.35	15.96	30.94
+borealis-27b_vllm_1gpu	prefill	4096	32	16	8	3.07	98.37	12715.67	1416.68	37.97	73.55
+borealis-27b_vllm_1gpu	prefill	16384	32	16	8	0.63	20.17	10353.10	6197.28	207.69	349.61
+borealis-27b_vllm_1gpu	decode	256	128	16	8	4.53	579.61	1777.04	123.45	12.93	13.49
+borealis-27b_vllm_1gpu	decode	256	512	16	8	1.18	606.55	919.82	47.36	13.12	13.12
+borealis-27b_vllm_1gpu	decode	256	1024	16	8	0.58	593.57	746.85	47.91	13.44	13.45

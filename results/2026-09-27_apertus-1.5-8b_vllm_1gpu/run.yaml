@@ -1,0 +1,47 @@
+schema_version: 1
+id: "2026-09-27_apertus-1.5-8b_vllm_1gpu"
+date: "2026-09-27"
+submitter: basir-sigma2
+job_id: 2368753
+
+system:
+  name: Olivia
+  operator: Sigma2 / NRIS (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 1
+gpus: 1
+max_context: 131072
+
+model:
+  repo: swiss-ai/Apertus-v1.5-8B
+  revision: a411d838600baf0e3635a3daf66fb7c55fc97bb6
+  architecture: Apertus1p5ForConditionalGeneration
+  kind: dense
+  params_b: 8.9
+  active_params_b: null
+  precision: "bf16"
+  weights: "bf16 checkpoint"
+
+engine:
+  name: vllm
+  version: "0.23.1rc1.dev1029+ga601a9d99"
+  image: "docker://ghcr.io/swiss-ai/vllm_apertus_1.5_release:latest-arm64 (Swiss AI)"
+  sif_sha256: "a33b569ca4c26d1a7ba0ec6a3835bda51217ed50e265585ea4e48670fafb4775"
+  torch: "2.11.0+cu130"
+  flags: "--tensor-parallel-size 1 --gpu-memory-utilization 0.9 --max-model-len 131072"
+  env: {}
+parallelism: {tp: 1, pp: 1, ep: 1, dp: 1}
+cuda_graphs: true
+
+benchmark:
+  suite: olivia-v1
+  client: vllm bench serve
+  client_version: "0.27.1"
+
+validation:
+  server_chat_requests: 1076
+
+notes: "Apertus 1.5 needs Swiss AI's vLLM build; stock vLLM 0.27.1 cannot load the architecture."

@@ -31,9 +31,10 @@ at any concurrency, divided by the run's GPU count.
 | [Qwen3.6-35B-A3B-FP8](results/2026-09-27_qwen3.6-35b-a3b_sglang_1gpu) | SGLang 0.5.18 | 1 | 235 | 1,792 | 3,385 | 3,099 | 3.7 | 3,385 |
 | [Apertus-v1.5-70B](results/2026-09-27_apertus-1.5-70b_vllm_2gpu_eager) (eager) | vLLM 0.23.1rc1.dev (Swiss AI) | 2 | 10 | 142 | 452 | 673 | 96.4 | 337 |
 | [DeepSeek-V4-Flash-FP8](results/2026-09-27_deepseek-v4-flash_sglang_4gpu) | SGLang 0.5.17 | 4 | 101 | 928 | 1,810 | 2,226 | 6.6 | 557 |
+| [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_tp4-pp3) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 38 | 347 | 925 | 1,250 | 13.0 | 104 |
 
 The Apertus-v1.5-70B run is eager: CUDA-graph capture crashes in that image. Compare it only with other eager
-runs. Prefill, decode and total-throughput numbers for every run are in its `result.tsv` and in the live table.
+runs. GLM-5.2 runs as one server over three nodes: tensor parallel inside each node, one pipeline stage per node. Prefill, decode and total-throughput numbers for every run are in its `result.tsv` and in the live table.
 
 ## Adding a result
 

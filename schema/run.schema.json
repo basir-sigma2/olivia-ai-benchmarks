@@ -239,8 +239,10 @@
       ],
       "properties": {
         "suite": {
+          "description": "olivia-v2 (current): one untimed warm-up wave before each point. olivia-v1: the same points measured cold.",
           "enum": [
-            "olivia-v1"
+            "olivia-v1",
+            "olivia-v2"
           ]
         },
         "client": {
@@ -262,7 +264,7 @@
       ],
       "properties": {
         "server_chat_requests": {
-          "description": "Chat-completion requests counted in the server's own log for the whole suite.",
+          "description": "Chat-completion requests counted in the server's own log for the whole suite, warm-up included.",
           "type": "integer",
           "minimum": 0
         },

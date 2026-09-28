@@ -1,0 +1,55 @@
+schema_version: 1
+id: "2026-09-28_deepseek-v4-pro_vllm_16gpu_tp4-pp4_eager"
+date: "2026-09-28"
+submitter: basir-sigma2
+job_id: 2372423
+
+system:
+  name: Olivia
+  operator: Sigma2 (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 4
+gpus: 16
+max_context: 32768
+
+model:
+  repo: deepseek-ai/DeepSeek-V4-Pro
+  revision: b5968e9190ef611bbf34a7229255be88a0e937c1
+  architecture: DeepseekV4ForCausalLM
+  kind: moe
+  params_b: 1598.8
+  active_params_b: 49
+  precision: "fp4 + fp8"
+  weights: "official checkpoint: FP4 expert weights, FP8 elsewhere"
+
+engine:
+  name: vllm
+  version: "0.27.1+lumi_aif_gh200_"
+  image: "LAIFS gh200_full_0903: Sigma2 build of the LUMI AI Factory vLLM container for Olivia's GH200 nodes"
+  sif_sha256: "abe3b0a65af680e0eb86324dac1a478aae9bd286699db6c32fc9ca1af8db97c6"
+  torch: "2.13.0+cu130"
+  flags: "--tensor-parallel-size 4 --pipeline-parallel-size 4 --kv-cache-dtype fp8 --enforce-eager --gpu-memory-utilization 0.88 --max-model-len 32768 --trust-remote-code"
+  env:
+    FI_CXI_DEFAULT_TX_SIZE: "16384"
+    FI_CXI_RX_MATCH_MODE: "software"
+    NCCL_CROSS_NIC: "0"
+    NCCL_PXN_DISABLE: "1"
+    FI_HMEM_CUDA_USE_DMABUF: "1"
+    NCCL_SOCKET_IFNAME: "hsn0,hsn1,hsn2,hsn3"
+    GLOO_SOCKET_IFNAME: "hsn0"
+    VLLM_USE_FLASHINFER_SAMPLER: "0"
+parallelism: {tp: 4, pp: 4, ep: 1, dp: 1, notes: "tensor parallel over the 4 GPUs of each node, one pipeline stage per node"}
+cuda_graphs: false
+
+benchmark:
+  suite: olivia-v3
+  client: vllm bench serve
+  client_version: "0.27.1"
+
+validation:
+  server_chat_requests: 2738
+
+notes: "Eager: vLLM 0.27.1 cannot capture CUDA graphs for DeepSeek-V4 (the FlashMLA sparse fp8 kernels fail in every graph mode), so this run is eager and is not an engine comparison with the SGLang runs. vLLM picked Marlin for the FP4 experts itself. One vLLM server over 4 nodes: one launch per node with --nnodes 4 --node-rank N --master-addr <first node> (--headless on ranks > 0), started by srun --network=disable_rdzv_get."

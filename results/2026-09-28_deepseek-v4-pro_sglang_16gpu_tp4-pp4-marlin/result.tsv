@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	conc-scaling	1024	128	4	1	0.46	58.59	529.17	267.95	15.09	15.10
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	conc-scaling	1024	128	16	4	1.43	182.69	1649.94	316.61	19.57	20.08
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	conc-scaling	1024	128	64	16	4.11	525.56	4746.49	367.91	27.77	29.59
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	conc-scaling	1024	128	128	32	6.73	861.81	7783.20	431.63	34.00	34.62
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	conc-scaling	1024	128	256	64	10.66	1364.92	12326.95	426.76	43.85	47.03
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	conc-scaling	1024	128	512	128	12.46	1594.81	14403.09	886.20	73.55	96.93
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	prefill	1024	32	16	8	7.80	249.60	8268.06	334.40	22.25	24.00
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	prefill	4096	32	16	8	6.55	209.51	27053.22	460.01	24.47	30.63
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	prefill	16384	32	16	8	5.21	166.82	85601.18	530.50	32.23	38.63
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	decode	256	128	16	8	2.50	319.83	969.50	320.89	22.67	23.06
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	decode	256	512	16	8	0.65	331.38	499.65	330.65	23.54	23.66
+deepseek-v4-pro_sglang_4n_tp4-pp4-marlin	decode	256	1024	16	8	0.33	342.79	429.83	364.15	23.00	24.15

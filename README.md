@@ -38,12 +38,16 @@ GPU is the best throughput at any concurrency, divided by the run's GPU count.
 | [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_dp3-tp4-ep12-deepepll) (dp3 × tp4, ep12, DeepEP) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 15 | 144 | 377 | 403 | 59.6 | 34 |
 | [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_tp4-pp3) (tp4 × pp3) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 74 | 444 | 979 | 1,255 | 13.1 | 104 |
 | [DeepSeek-V4-Pro](results/2026-09-27_deepseek-v4-pro_sglang_12gpu_tp4-pp3) (tp4 × pp3) | SGLang 0.5.17 | 12 (3 nodes) | 60 | 427 | 1,073 | 1,380 | 14.9 | 115 |
+| [DeepSeek-V4-Pro](results/2026-09-28_deepseek-v4-pro_sglang_16gpu_tp4-pp4-flashinfer-mxfp4) (tp4 × pp4, FlashInfer FP4) | SGLang 0.5.17 | 16 (4 nodes) | 54 | 466 | 1,228 | 1,820 | 16.7 | 114 |
+| [DeepSeek-V4-Pro](results/2026-09-28_deepseek-v4-pro_sglang_16gpu_tp4-pp4-marlin) (tp4 × pp4) | SGLang 0.5.17 | 16 (4 nodes) | 59 | 526 | 1,365 | 1,595 | 15.1 | 100 |
+| [DeepSeek-V4-Pro](results/2026-09-28_deepseek-v4-pro_vllm_16gpu_tp4-pp4_eager) (eager) (tp4 × pp4) | vLLM 0.27.1 (LAIFS) | 16 (4 nodes) | 10 | 157 | 571 | 1,120 | 98.5 | 70 |
 
 The Apertus-v1.5-70B run is eager: CUDA-graph capture crashes in that image. Compare it only with other eager runs.
 Prefill, decode and total-throughput numbers for every run are in its `result.tsv` and in the live table.
 Multi-node runs are one server over 2–3 nodes, with NCCL over Slingshot and GPUDirect RDMA. Tensor parallel inside
 each node with one pipeline stage per node (tp × pp) is the fastest layout; the GLM-5.2 wide expert-parallel
-layouts (dp × tp, ep) are slower at every concurrency up to 128. DeepSeek-V4-Pro on 4 nodes is queued.
+layouts (dp × tp, ep) are slower at every concurrency up to 128. A fourth node adds capacity for DeepSeek-V4-Pro,
+not single-user speed.
 The first September runs, measured cold (`olivia-v1`), are kept as `*_cold` and hidden in the live table by default.
 
 ## Adding a result

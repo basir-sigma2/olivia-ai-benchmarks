@@ -72,6 +72,11 @@ scripts/build.py           validates all runs, writes results.json
 site/index.html            the live table (GitHub Pages)
 ```
 
+## Contributors
+
+- Basir Sedighi (Sigma2) — [@basir-sigma2](https://github.com/basir-sigma2)
+- Benjamin D. Brodie (Digdir) — [@bdb-itonomi](https://github.com/bdb-itonomi)
+
 ## Credits
 
 The benchmark scenarios come from the GLM-5.3 inference work on CSCS Alps,

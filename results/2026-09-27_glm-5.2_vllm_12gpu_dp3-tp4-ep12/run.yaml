@@ -6,7 +6,7 @@ job_id: 2372421
 
 system:
   name: Olivia
-  operator: Sigma2 / NRIS (Norway)
+  operator: Sigma2 (Norway)
   gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
   gpus_per_node: 4
   gpu_compute_mode: Exclusive_Process
@@ -28,7 +28,7 @@ model:
 engine:
   name: vllm
   version: "0.27.1+lumi_aif_gh200_"
-  image: "LAIFS gh200_full_0903: NRIS build of the LUMI AI Factory vLLM container for Olivia's GH200 nodes"
+  image: "LAIFS gh200_full_0903: Sigma2 build of the LUMI AI Factory vLLM container for Olivia's GH200 nodes"
   sif_sha256: "abe3b0a65af680e0eb86324dac1a478aae9bd286699db6c32fc9ca1af8db97c6"
   torch: "2.13.0+cu130"
   flags: "--data-parallel-size 3 --data-parallel-size-local 1 --tensor-parallel-size 4 --enable-expert-parallel --all2all-backend allgather_reducescatter --gpu-memory-utilization 0.94 --kv-cache-dtype fp8 --max-model-len 32768 --max-num-seqs 128 --trust-remote-code"

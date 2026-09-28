@@ -1,7 +1,7 @@
 # Olivia AI benchmarks
 
 Inference benchmarks for large language models on [Olivia](https://documentation.sigma2.no/hpc_machines/olivia.html),
-Norway's national supercomputer (Sigma2 / NRIS). Olivia's GPU nodes have four NVIDIA GH200 superchips each,
+Norway's national supercomputer (Sigma2). Olivia's GPU nodes have four NVIDIA GH200 superchips each,
 connected by HPE Slingshot-11.
 
 Each run is a folder under [`results/`](results) with two files:

@@ -6,7 +6,7 @@ job_id: 2372452
 
 system:
   name: Olivia
-  operator: Sigma2 / NRIS (Norway)
+  operator: Sigma2 (Norway)
   gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
   gpus_per_node: 4
   gpu_compute_mode: Exclusive_Process

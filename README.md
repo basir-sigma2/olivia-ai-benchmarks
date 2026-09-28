@@ -50,6 +50,14 @@ layouts (dp × tp, ep) are slower at every concurrency up to 128. A fourth node 
 not single-user speed.
 The first September runs, measured cold (`olivia-v1`), are kept as `*_cold` and hidden in the live table by default.
 
+## Running vLLM on Olivia across nodes
+
+[`examples/vllm-olivia-multinode.sh`](examples/vllm-olivia-multinode.sh) is a single Slurm job script. It runs one
+vLLM server over several GH200 nodes without Ray: one process per node through `srun`, in Dragana's LAIFS image
+(vLLM 0.27.1), with the Slingshot settings from CSCS. It is set up for GLM-5.2-FP8 on 3 nodes, the launch settings
+of the measured runs above. Set `--account` and `CACHE_DIR`, then `sbatch` it. It waits for the server, sends a test
+request and reports whether NCCL used Slingshot with GPUDirect RDMA.
+
 ## Adding a result
 
 Anyone who runs the suite on Olivia can add a result by pull request; the details are in
@@ -70,6 +78,7 @@ results/<run>/result.tsv   the suite's 12 points
 schema/run.schema.json     every run.yaml field, documented
 scripts/build.py           validates all runs, writes results.json
 site/index.html            the live table (GitHub Pages)
+examples/                  job scripts (vLLM across nodes on Olivia)
 ```
 
 ## Contributors

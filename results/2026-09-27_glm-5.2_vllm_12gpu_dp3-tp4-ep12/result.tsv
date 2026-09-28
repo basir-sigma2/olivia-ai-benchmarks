@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	conc-scaling	1024	128	4	1	0.21	27.33	248.52	140.71	35.77	36.31
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	conc-scaling	1024	128	16	4	0.77	98.09	892.00	390.88	37.95	40.44
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	conc-scaling	1024	128	64	16	2.48	316.97	2882.42	641.92	45.73	48.75
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	conc-scaling	1024	128	128	32	3.59	459.17	4175.58	1047.58	61.89	65.51
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	conc-scaling	1024	128	256	64	5.50	704.30	6404.77	1725.41	77.83	93.13
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	conc-scaling	1024	128	512	128	7.59	971.71	8836.49	2421.42	113.28	132.50
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	prefill	1024	32	16	8	4.18	133.87	4467.98	521.20	44.37	53.91
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	prefill	4096	32	16	8	2.10	67.31	8708.71	2007.58	57.46	111.27
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	prefill	16384	32	16	8	0.79	25.22	12949.53	5214.86	157.76	290.59
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	decode	256	128	16	8	1.52	195.12	603.65	325.74	38.65	39.73
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	decode	256	512	16	8	0.39	199.04	303.22	318.35	39.62	39.99
+glm-5.2_vllm_3n_dp3-tp4-ep12-agrs	decode	256	1024	16	8	0.19	198.68	250.68	331.83	39.97	40.19

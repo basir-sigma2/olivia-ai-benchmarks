@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+glm-5.3_vllm_3n_tp4-pp3	conc-scaling	1024	128	4	1	0.59	74.99	681.90	67.53	12.91	12.94
+glm-5.3_vllm_3n_tp4-pp3	conc-scaling	1024	128	16	4	1.77	225.96	2054.81	110.07	16.95	17.12
+glm-5.3_vllm_3n_tp4-pp3	conc-scaling	1024	128	64	16	3.61	462.54	4206.23	780.74	28.63	34.90
+glm-5.3_vllm_3n_tp4-pp3	conc-scaling	1024	128	128	32	5.65	723.14	6576.02	887.41	37.45	49.40
+glm-5.3_vllm_3n_tp4-pp3	conc-scaling	1024	128	256	64	8.00	1024.12	9313.14	1336.53	52.13	73.56
+glm-5.3_vllm_3n_tp4-pp3	conc-scaling	1024	128	512	128	10.22	1308.22	11896.62	1968.10	82.35	124.52
+glm-5.3_vllm_3n_tp4-pp3	prefill	1024	32	16	8	5.73	183.29	6117.16	687.10	22.73	36.22
+glm-5.3_vllm_3n_tp4-pp3	prefill	4096	32	16	8	2.38	76.14	9850.45	1588.48	56.53	98.61
+glm-5.3_vllm_3n_tp4-pp3	prefill	16384	32	16	8	0.70	22.38	11488.52	5663.91	184.75	336.32
+glm-5.3_vllm_3n_tp4-pp3	decode	256	128	16	8	2.73	350.04	1082.94	126.67	22.00	22.12
+glm-5.3_vllm_3n_tp4-pp3	decode	256	512	16	8	0.67	342.68	522.05	134.92	23.11	23.16
+glm-5.3_vllm_3n_tp4-pp3	decode	256	1024	16	8	0.33	336.57	424.66	125.66	23.66	23.70

@@ -1,0 +1,55 @@
+schema_version: 1
+id: "2026-09-28_glm-5.3_vllm_12gpu_tp4-pp3"
+date: "2026-09-28"
+submitter: basir-sigma2
+job_id: 2372963
+
+system:
+  name: Olivia
+  operator: Sigma2 (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 3
+gpus: 12
+max_context: 32768
+
+model:
+  repo: zai-org/GLM-5.3
+  revision: aca966e4e02791568aa6a4ced368624b3d897f42
+  architecture: GlmMoeDsaForCausalLM
+  kind: moe
+  params_b: 753.3
+  active_params_b: null
+  precision: "fp8"
+  weights: "fp8 block-quantised checkpoint"
+
+engine:
+  name: vllm
+  version: "0.27.1+lumi_aif_gh200_"
+  image: "LAIFS gh200_full_0903: Sigma2 build of the LUMI AI Factory vLLM container for Olivia's GH200 nodes"
+  sif_sha256: "abe3b0a65af680e0eb86324dac1a478aae9bd286699db6c32fc9ca1af8db97c6"
+  torch: "2.13.0+cu130"
+  flags: "--tensor-parallel-size 4 --pipeline-parallel-size 3 --max-model-len 32768 --gpu-memory-utilization 0.88 --trust-remote-code"
+  env:
+    FI_CXI_DEFAULT_TX_SIZE: "16384"
+    FI_CXI_RX_MATCH_MODE: "software"
+    NCCL_CROSS_NIC: "0"
+    NCCL_PXN_DISABLE: "1"
+    FI_HMEM_CUDA_USE_DMABUF: "1"
+    NCCL_SOCKET_IFNAME: "hsn0,hsn1,hsn2,hsn3"
+    GLOO_SOCKET_IFNAME: "hsn0"
+    VLLM_USE_FLASHINFER_SAMPLER: "0"
+parallelism: {tp: 4, pp: 3, ep: 1, dp: 1, notes: "tensor parallel over the 4 GPUs of each node, one pipeline stage per node"}
+cuda_graphs: true
+
+benchmark:
+  suite: olivia-v3
+  client: vllm bench serve
+  client_version: "0.27.1"
+
+validation:
+  server_chat_requests: 2738
+
+notes: "One vLLM server over 3 nodes: one launch per node with --nnodes 3 --node-rank N --master-addr <first node>, started by srun --network=disable_rdzv_get. NCCL runs over Slingshot through the image's aws-ofi-nccl plugin, with GPUDirect RDMA via dma-buf. Same launch as the GLM-5.2 run; GLM-5.3 has the same architecture and size."

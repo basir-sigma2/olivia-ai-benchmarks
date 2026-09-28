@@ -37,6 +37,7 @@ GPU is the best throughput at any concurrency, divided by the run's GPU count.
 | [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_dp3-tp4-ep12) (dp3 × tp4, ep12) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 27 | 317 | 704 | 972 | 35.8 | 81 |
 | [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_dp3-tp4-ep12-deepepll) (dp3 × tp4, ep12, DeepEP) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 15 | 144 | 377 | 403 | 59.6 | 34 |
 | [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_tp4-pp3) (tp4 × pp3) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 74 | 444 | 979 | 1,255 | 13.1 | 104 |
+| [GLM-5.3](results/2026-09-28_glm-5.3_vllm_12gpu_tp4-pp3) (tp4 × pp3) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 75 | 463 | 1,024 | 1,308 | 12.9 | 109 |
 | [DeepSeek-V4-Pro](results/2026-09-27_deepseek-v4-pro_sglang_12gpu_tp4-pp3) (tp4 × pp3) | SGLang 0.5.17 | 12 (3 nodes) | 60 | 427 | 1,073 | 1,380 | 14.9 | 115 |
 | [DeepSeek-V4-Pro](results/2026-09-28_deepseek-v4-pro_sglang_16gpu_tp4-pp4-flashinfer-mxfp4) (tp4 × pp4, FlashInfer FP4) | SGLang 0.5.17 | 16 (4 nodes) | 54 | 466 | 1,228 | 1,820 | 16.7 | 114 |
 | [DeepSeek-V4-Pro](results/2026-09-28_deepseek-v4-pro_sglang_16gpu_tp4-pp4-marlin) (tp4 × pp4) | SGLang 0.5.17 | 16 (4 nodes) | 59 | 526 | 1,365 | 1,595 | 15.1 | 100 |
@@ -90,7 +91,10 @@ examples/                  job scripts (vLLM across nodes on Olivia)
 
 The benchmark scenarios come from the GLM-5.3 inference work on CSCS Alps,
 [andresnowak/glm-5.3-inference](https://github.com/andresnowak/glm-5.3-inference) (`scripts/bench_suite.sh`).
-Their published numbers can be compared line by line with runs here.
+For GLM-5.3 their published run (4 nodes, TP2 × DP8 with DeepEP, vLLM 0.29, no warm-up) reached 19.5, 71.9,
+201.6, 287.5 and 423.1 output tokens/s at 1, 4, 16, 32 and 64 users, 42 ms per token for one user. The 3-node
+tp4 × pp3 run here reached 75, 226, 463, 723 and 1,024 tokens/s, 12.9 ms per token. Layout, vLLM version and
+warm-up differ, so this compares the model on the two systems, not identical setups.
 
 ## License
 

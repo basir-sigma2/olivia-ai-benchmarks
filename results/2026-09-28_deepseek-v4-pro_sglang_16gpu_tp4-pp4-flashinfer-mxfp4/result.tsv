@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	conc-scaling	1024	128	4	1	0.42	53.86	486.43	251.98	16.73	17.19
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	conc-scaling	1024	128	16	4	1.31	167.37	1511.59	300.21	21.72	22.33
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	conc-scaling	1024	128	64	16	3.64	466.07	4209.23	328.59	31.99	32.63
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	conc-scaling	1024	128	128	32	6.31	807.48	7292.53	363.59	37.05	38.37
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	conc-scaling	1024	128	256	64	9.59	1227.56	11086.42	430.58	49.11	51.72
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	conc-scaling	1024	128	512	128	14.22	1819.95	16436.41	1121.77	61.98	68.66
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	prefill	1024	32	16	8	7.11	227.61	7539.57	332.94	25.48	27.29
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	prefill	4096	32	16	8	6.91	220.98	28534.57	366.26	25.45	28.13
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	prefill	16384	32	16	8	5.08	162.62	83444.48	528.35	33.56	38.44
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	decode	256	128	16	8	2.19	280.60	850.57	326.91	26.15	26.69
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	decode	256	512	16	8	0.57	290.21	437.58	323.84	26.98	27.30
+deepseek-v4-pro_sglang_4n_tp4-pp4-flashinfer-mxfp4	decode	256	1024	16	8	0.28	285.90	358.49	374.50	27.64	27.73

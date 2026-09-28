@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	conc-scaling	1024	128	4	1	0.08	9.91	89.49	407.67	98.50	98.66
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	conc-scaling	1024	128	16	4	0.31	39.63	357.90	410.37	98.50	98.72
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	conc-scaling	1024	128	64	16	1.23	156.95	1417.42	438.59	99.28	99.56
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	conc-scaling	1024	128	128	32	1.66	212.63	1920.31	5685.35	106.79	107.99
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	conc-scaling	1024	128	256	64	4.46	571.05	5157.34	647.20	107.40	108.11
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	conc-scaling	1024	128	512	128	8.75	1120.26	10117.36	751.46	108.41	109.52
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	prefill	1024	32	16	8	2.32	74.25	2459.47	426.12	97.45	97.68
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	prefill	4096	32	16	8	2.15	68.89	8895.61	473.42	104.56	104.79
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	prefill	16384	32	16	8	1.98	63.45	32557.88	683.03	104.85	107.47
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	decode	256	128	16	8	0.62	78.77	238.78	422.59	99.02	99.12
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	decode	256	512	16	8	0.16	80.23	120.98	416.17	99.09	99.25
+deepseek-v4-pro_vllm_4n_tp4-pp4-eager	decode	256	1024	16	8	0.08	80.50	100.94	417.92	99.07	99.09

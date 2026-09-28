@@ -1,0 +1,13 @@
+label	scenario	in_len	out_len	prompts	conc	req_s	out_tok_s	total_tok_s	ttft_ms	tpot_ms	p99_tpot_ms
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	conc-scaling	1024	128	4	1	0.12	15.39	139.92	750.91	59.59	60.33
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	conc-scaling	1024	128	16	4	0.43	55.48	504.49	853.29	65.57	71.10
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	conc-scaling	1024	128	64	16	1.12	143.69	1306.68	1821.24	96.44	102.72
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	conc-scaling	1024	128	128	32	0.86	110.23	1002.44	5045.32	249.37	307.37
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	conc-scaling	1024	128	256	64	2.95	377.12	3429.46	3256.96	138.24	168.65
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	conc-scaling	1024	128	512	128	3.15	403.09	3665.59	14275.92	188.56	198.57
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	prefill	1024	32	16	8	1.44	46.15	1540.23	1667.67	116.36	139.05
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	prefill	4096	32	16	8	0.70	22.34	2890.58	5086.83	172.15	202.53
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	prefill	16384	32	16	8	0.20	6.46	3317.89	23226.58	223.59	334.07
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	decode	256	128	16	8	0.35	44.97	139.11	2079.85	159.04	171.55
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	decode	256	512	16	8	0.24	120.50	183.57	430.25	65.59	66.49
+glm-5.2_vllm_3n_dp3-tp4-ep12-deepepll-eplb264	decode	256	1024	16	8	0.08	85.10	107.37	323.00	93.73	124.23

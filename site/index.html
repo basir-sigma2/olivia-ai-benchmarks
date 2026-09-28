@@ -115,7 +115,7 @@
     latest = doc.latest_suite || "olivia-v1";
     rows = doc.runs.map(r => {
       const s = r.summary, by = s.out_tok_s_by_conc, p = r.parallelism;
-      const layout = ["tp", "pp", "ep", "dp"].filter(k => p[k] > 1).map(k => k + p[k]).join(" × ");
+      const layout = ["tp", "pp", "ep", "dp"].filter(k => p[k] > 1).map(k => k + p[k]).join(" × ") + (r.engine.flags.includes("deepep") ? ", DeepEP" : "");
       const engine = { sglang: "SGLang", vllm: "vLLM" }[r.engine.name] || r.engine.name;
       return {
         r, suite: r.benchmark.suite, name: r.model.repo.split("/")[1] + " " + r.gpus,

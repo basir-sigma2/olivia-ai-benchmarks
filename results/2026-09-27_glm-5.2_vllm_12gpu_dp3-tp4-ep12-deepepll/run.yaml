@@ -1,0 +1,58 @@
+schema_version: 1
+id: "2026-09-27_glm-5.2_vllm_12gpu_dp3-tp4-ep12-deepepll"
+date: "2026-09-27"
+submitter: basir-sigma2
+job_id: 2372421
+
+system:
+  name: Olivia
+  operator: Sigma2 / NRIS (Norway)
+  gpu: NVIDIA GH200 superchip, 96 GB HBM3 per GPU (97,871 MiB visible)
+  gpus_per_node: 4
+  gpu_compute_mode: Exclusive_Process
+  interconnect: HPE Slingshot-11, 4 NICs per node
+nodes: 3
+gpus: 12
+max_context: 32768
+
+model:
+  repo: zai-org/GLM-5.2-FP8
+  revision: f33c6dc501ee5a2c7e35155653b1b1abbc320951
+  architecture: GlmMoeDsaForCausalLM
+  kind: moe
+  params_b: 753.3
+  active_params_b: null
+  precision: "fp8"
+  weights: "fp8 block-quantised checkpoint"
+
+engine:
+  name: vllm
+  version: "0.27.1+lumi_aif_gh200_"
+  image: "LAIFS gh200_full_0903: NRIS build of the LUMI AI Factory vLLM container for Olivia's GH200 nodes"
+  sif_sha256: "abe3b0a65af680e0eb86324dac1a478aae9bd286699db6c32fc9ca1af8db97c6"
+  torch: "2.13.0+cu130"
+  flags: "--data-parallel-size 3 --data-parallel-size-local 1 --tensor-parallel-size 4 --enable-expert-parallel --all2all-backend deepep_low_latency --enable-eplb --eplb-config {\"num_redundant_experts\":8} --gpu-memory-utilization 0.94 --kv-cache-dtype fp8 --max-model-len 32768 --max-num-seqs 128 --trust-remote-code"
+  env:
+    FI_CXI_DEFAULT_TX_SIZE: "16384"
+    FI_CXI_RX_MATCH_MODE: "software"
+    NCCL_CROSS_NIC: "0"
+    NCCL_PXN_DISABLE: "1"
+    FI_HMEM_CUDA_USE_DMABUF: "1"
+    NCCL_SOCKET_IFNAME: "hsn0,hsn1,hsn2,hsn3"
+    GLOO_SOCKET_IFNAME: "hsn0"
+    VLLM_USE_FLASHINFER_SAMPLER: "0"
+    UCCL_EP_TRANSPORT: "cxi"
+    UCCL_SOCKET_IFNAME: "hsn0"
+    UCCL_EP_CPU_TIMEOUT_SECS: "600"
+parallelism: {tp: 4, pp: 1, ep: 12, dp: 3, notes: "one engine per node; experts spread over all 12 GPUs"}
+cuda_graphs: true
+
+benchmark:
+  suite: olivia-v3
+  client: vllm bench serve
+  client_version: "0.27.1"
+
+validation:
+  server_chat_requests: 2738
+
+notes: "Wide expert parallel as the allgather run, with DeepEP low-latency kernels for the expert exchange, through UCCL-EP (commit e22a3e8, CXI transport, built for this image, with a fix for Exclusive_Process GPUs). DeepEP needs the expert count divisible by the 12 ranks, so EPLB adds 8 redundant experts (264). Slowest of the GLM-5.2 layouts here (60 ms per token at 1 user)."

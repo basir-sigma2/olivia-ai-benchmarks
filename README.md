@@ -33,14 +33,17 @@ GPU is the best throughput at any concurrency, divided by the run's GPU count.
 | [Apertus-v1.5-70B](results/2026-09-27_apertus-1.5-70b_vllm_2gpu_eager) (eager) | vLLM 0.23.1rc1.dev (Swiss AI) | 2 | 11 | 144 | 479 | 721 | 93.1 | 361 |
 | [Qwen3.8-Flash-Next-FP8](results/2026-09-27_qwen3.8-flash-next_sglang_4gpu_ep4) | SGLang 0.5.20 | 4 | 132 | 1,073 | 2,413 | 2,761 | 6.1 | 690 |
 | [DeepSeek-V4-Flash-FP8](results/2026-09-27_deepseek-v4-flash_sglang_4gpu) | SGLang 0.5.17 | 4 | 126 | 980 | 1,802 | 2,224 | 6.6 | 556 |
-| [DeepSeek-V4-Flash-FP8](results/2026-09-27_deepseek-v4-flash_sglang_8gpu_tp4-pp2) | SGLang 0.5.17 | 8 (2 nodes) | 102 | 959 | 2,645 | 3,902 | 8.4 | 488 |
-| [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_tp4-pp3) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 74 | 444 | 979 | 1,255 | 13.1 | 104 |
-| [DeepSeek-V4-Pro](results/2026-09-27_deepseek-v4-pro_sglang_12gpu_tp4-pp3) | SGLang 0.5.17 | 12 (3 nodes) | 60 | 427 | 1,073 | 1,380 | 14.9 | 115 |
+| [DeepSeek-V4-Flash-FP8](results/2026-09-27_deepseek-v4-flash_sglang_8gpu_tp4-pp2) (tp4 × pp2) | SGLang 0.5.17 | 8 (2 nodes) | 102 | 959 | 2,645 | 3,902 | 8.4 | 488 |
+| [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_dp3-tp4-ep12) (dp3 × tp4, ep12) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 27 | 317 | 704 | 972 | 35.8 | 81 |
+| [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_dp3-tp4-ep12-deepepll) (dp3 × tp4, ep12, DeepEP) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 15 | 144 | 377 | 403 | 59.6 | 34 |
+| [GLM-5.2-FP8](results/2026-09-27_glm-5.2_vllm_12gpu_tp4-pp3) (tp4 × pp3) | vLLM 0.27.1 (LAIFS) | 12 (3 nodes) | 74 | 444 | 979 | 1,255 | 13.1 | 104 |
+| [DeepSeek-V4-Pro](results/2026-09-27_deepseek-v4-pro_sglang_12gpu_tp4-pp3) (tp4 × pp3) | SGLang 0.5.17 | 12 (3 nodes) | 60 | 427 | 1,073 | 1,380 | 14.9 | 115 |
 
 The Apertus-v1.5-70B run is eager: CUDA-graph capture crashes in that image. Compare it only with other eager runs.
 Prefill, decode and total-throughput numbers for every run are in its `result.tsv` and in the live table.
-Multi-node runs are one server over 2–3 nodes: tensor parallel inside each node, one pipeline stage per node, NCCL
-over Slingshot with GPUDirect RDMA. The expert-parallel layouts and DeepSeek-V4-Pro on 4 nodes are queued.
+Multi-node runs are one server over 2–3 nodes, with NCCL over Slingshot and GPUDirect RDMA. Tensor parallel inside
+each node with one pipeline stage per node (tp × pp) is the fastest layout; the GLM-5.2 wide expert-parallel
+layouts (dp × tp, ep) are slower at every concurrency up to 128. DeepSeek-V4-Pro on 4 nodes is queued.
 The first September runs, measured cold (`olivia-v1`), are kept as `*_cold` and hidden in the live table by default.
 
 ## Adding a result

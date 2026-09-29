@@ -83,17 +83,35 @@ def read_points(path, errors):
     return points
 
 
-def summarise(points, gpus):
+def layout(run):
+    """One plain-text label for how the model was spread over its GPUs, shared by every page that shows runs:
+    "tp4 × pp3", "dp3 × tp4, ep12, DeepEP", "tp2, eager"; empty for one GPU with CUDA graphs. Only dp, tp and pp
+    multiply to the GPU count; expert parallelism reuses the same GPUs, so it is a note."""
+    par, eng = run["parallelism"], run["engine"]
+    split = " × ".join(f"{k}{par[k]}" for k in ("dp", "tp", "pp") if par[k] > 1)
+    notes = [f"ep{par['ep']}"] if par["ep"] > 1 else []
+    if "deepep" in (eng["flags"] + " " + " ".join(f"{k}={v}" for k, v in eng.get("env", {}).items())).lower():
+        notes.append("DeepEP")
+    if not run["cuda_graphs"]:
+        notes.append("eager")
+    return ", ".join(([split] if split else []) + notes)
+
+
+def summarise(points, run):
     by_key = {(p["scenario"], p["in_len"], p["out_len"], p["conc"]): p for p in points}
     conc = {p["conc"]: p for p in points if p["scenario"] == "conc-scaling"}
     peak = max(conc.values(), key=lambda p: p["out_tok_s"]) if conc else None
     pick = lambda key, col: by_key[key][col] if key in by_key else None
+    tpot_c1 = pick(("conc-scaling", 1024, 128, 1), "tpot_ms")
     return {
+        "layout": layout(run),
         "out_tok_s_by_conc": {str(c): conc[c]["out_tok_s"] for c in sorted(conc)},
         "peak_out_tok_s": peak["out_tok_s"] if peak else None,
         "peak_conc": peak["conc"] if peak else None,
-        "peak_out_tok_s_per_gpu": round(peak["out_tok_s"] / gpus, 1) if peak else None,
-        "tpot_ms_c1": pick(("conc-scaling", 1024, 128, 1), "tpot_ms"),
+        "peak_out_tok_s_per_gpu": round(peak["out_tok_s"] / run["gpus"], 1) if peak else None,
+        "tpot_ms_c1": tpot_c1,
+        # writing speed for one user once the prompt is processed; out_tok_s_by_conc["1"] includes the prompt
+        "decode_tok_s_c1": round(1000 / tpot_c1, 1) if tpot_c1 else None,
         "ttft_ms_c1": pick(("conc-scaling", 1024, 128, 1), "ttft_ms"),
         "prefill_ttft_ms": {str(i): pick(("prefill", i, 32, 8), "ttft_ms") for i in (1024, 4096, 16384)},
         "decode_out_tok_s": {str(o): pick(("decode", 256, o, 8), "out_tok_s") for o in (128, 512, 1024)},
@@ -157,7 +175,7 @@ def check_run(folder, validator):
 
     run["benchmark_requests"] = expected
     run["points"] = [{k: v for k, v in p.items() if k != "label"} for p in points]
-    run["summary"] = summarise(points, run["gpus"])
+    run["summary"] = summarise(points, run)
     run["path"] = f"results/{folder.name}"
     return run, []
 
